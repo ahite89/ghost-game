@@ -1,11 +1,18 @@
 import Key from "./Key";
 import { keyOptions } from "../constants/keyboard";
+import { KeyboardProps } from "../interfaces/keyboard";
 
-export default function Keyboard() {
+export default function Keyboard({handleKeySelected}: KeyboardProps) {
 
     const renderedKeys = keyOptions().map(key => {
         return (
-            <Key key={key.name}>{key.name}</Key>
+            <Key 
+                onClick={handleKeySelected} 
+                key={key.name}
+                keyName={key.name}
+            >
+                {key.name}
+            </Key>
         );
     });
 

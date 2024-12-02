@@ -1,5 +1,6 @@
 import { KeyProps } from "./key"
 
 export interface KeyboardProps {
-    keys: KeyProps[]
+    keys?: KeyProps[],
+    handleKeySelected: (key: string) => void
 }

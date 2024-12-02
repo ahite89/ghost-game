@@ -32,6 +32,10 @@ function App() {
   const [activeKeyboard, setActiveKeyboard] = useState<boolean>(true);
   const [gameRound, setGameRound] = useState<number>(1);
 
+  const handleKeySelected = (key: string): void => {
+    console.log(key);
+  };
+
   return (
     <div className="App">
       <Header />
@@ -39,7 +43,7 @@ function App() {
       <HitPoints currentHP={userHP}/>
       <MessageCenter message={message}/>
       <CharacterString characters={characterString} />
-      <Keyboard />
+      <Keyboard handleKeySelected={handleKeySelected}/>
     </div>
   );
 }

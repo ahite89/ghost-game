@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export interface KeyProps {
-    keyName?: string,
+    keyName: string,
     children: ReactNode,
-    onClick?: () => void
+    onClick: (key: string) => void
 }
