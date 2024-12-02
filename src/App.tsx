@@ -2,6 +2,8 @@ import React, {useState, useEffect, useRef} from 'react';
 
 import allWordsFromDictionary from './api/dictionary';
 
+import { getRandomCharacter } from './services/character';
+
 import { FULL_HP_ARRAY } from './constants/hitPoints';
 
 import CharacterString from './components/CharacterString';
@@ -10,8 +12,9 @@ import HitPoints from './components/HitPoints';
 import Keyboard from './components/Keyboard';
 import MessageCenter from './components/MessageCenter';
 
-import './App.css';
 import { HitPointProps } from './interfaces/hitPoint';
+
+import './App.css';
 
 function App() {
 
@@ -23,7 +26,7 @@ function App() {
 
   const [cpuHP, setCpuHP] = useState<HitPointProps[]>(FULL_HP_ARRAY);
   const [userHP, setUserHP] = useState<HitPointProps[]>(FULL_HP_ARRAY);
-  const [characterString, setCharacterString] = useState<string[]>(['H', 'E', 'L', 'L', 'O']);
+  const [characterString, setCharacterString] = useState<string[]>([getRandomCharacter()]);
   const [message, setMessage] = useState<string>('Welcome!');
   const [validWordList, setValidWordList] = useState<string[]>(['']);
   const [activeKeyboard, setActiveKeyboard] = useState<boolean>(true);
