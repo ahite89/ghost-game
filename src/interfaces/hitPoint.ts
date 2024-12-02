@@ -2,6 +2,6 @@ import { ReactNode } from 'react';
 
 export interface HitPointProps {
     id?: number,
-    value?: string,
+    symbol?: string,
     children?: ReactNode
 }

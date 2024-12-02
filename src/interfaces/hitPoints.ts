@@ -1,5 +1,5 @@
 import { HitPointProps } from "./hitPoint"
 
 export interface HitPointsProps {
-    hitPoints: HitPointProps[]
+    currentHP: HitPointProps[]
 }

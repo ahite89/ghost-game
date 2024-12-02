@@ -1,11 +1,12 @@
-import { hitPointArray } from "../constants/hitPoints";
+import { HitPointsProps } from "../interfaces/hitPoints";
 import HitPoint from "./HitPoint";
 
-export default function HitPoints() {
+export default function HitPoints({currentHP}: HitPointsProps) {
 
-    const renderedHitPoints = hitPointArray.map(hitPoint => {
+
+    const renderedHitPoints = currentHP.map(hitPoint => {
         return (
-            <HitPoint key={hitPoint.id}>{hitPoint.value}</HitPoint>
+            <HitPoint key={hitPoint.id}>{hitPoint.symbol}</HitPoint>
         );
     });
 

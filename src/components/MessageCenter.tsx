@@ -1,5 +1,7 @@
-export default function MessageCenter() {
+import { MessageCenterProps } from "../interfaces/messageCenter";
+
+export default function MessageCenter({message}: MessageCenterProps) {
     return (
-        <div>Messages go here</div>
+        <div>{message}</div>
     );
 }
