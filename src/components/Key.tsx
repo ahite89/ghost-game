@@ -8,10 +8,8 @@ export default function Key({ keyName, children, onClick }: KeyProps) {
     };
 
     return (
-        <div>
-            <Button onClick={handleKeyClick} variant="outlined">
-                {children}
-            </Button>         
-        </div>
+        <Button style={{margin: '.2rem'}} onClick={handleKeyClick} variant="outlined">
+            {children}
+        </Button>         
     );
 }

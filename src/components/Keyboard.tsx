@@ -1,6 +1,7 @@
 import Key from "./Key";
 import { keyOptions } from "../constants/keyboard";
 import { KeyboardProps } from "../interfaces/keyboard";
+import { Grid2 as Grid } from "@mui/material";
 
 export default function Keyboard({handleKeySelected}: KeyboardProps) {
 
@@ -17,8 +18,16 @@ export default function Keyboard({handleKeySelected}: KeyboardProps) {
     });
 
     return (
-        <div>
-            {renderedKeys}
-        </div>
+        <Grid container spacing={{ xs: 0.5, md: 0.5 }} columns={{ xs: 8, sm: 8, md: 8 }}>
+           <Grid>
+                {renderedKeys.slice(0, 10)}
+            </Grid>
+            <Grid>
+                {renderedKeys.slice(10, 19)}
+            </Grid>
+            <Grid>
+                {renderedKeys.slice(19, 28)}
+            </Grid>
+        </Grid>
     );
 }
