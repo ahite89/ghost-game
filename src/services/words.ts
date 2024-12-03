@@ -1,3 +1,3 @@
-export const getValidWords = (characters: string): string[] => {
-    return ['H', 'I'];
+export const getValidWords = (wordList: string[], characters: string): string[] => {
+    return wordList.filter(word => word.startsWith(characters.toLowerCase()));
 };
