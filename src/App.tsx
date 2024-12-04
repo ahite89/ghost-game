@@ -1,9 +1,9 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect } from 'react';
 
 import allWordsFromDictionary from './api/dictionary';
 
 import { getRandomCharacter } from './services/character';
-import { getValidWords } from './services/words';
+import { getValidWords, getRandomValidWord } from './services/words';
 
 import { FULL_HP_ARRAY } from './constants/hitPoints';
 import { Keys } from './constants/keyboard';
@@ -13,6 +13,7 @@ import Header from './components/Header';
 import HitPoints from './components/HitPoints';
 import Keyboard from './components/Keyboard';
 import MessageCenter from './components/MessageCenter';
+import Loader from './components/Loader';
 
 import { HitPointProps } from './interfaces/hitPoint';
 
@@ -39,20 +40,45 @@ function App() {
     setValidWordList(newValidWords);
   }, []);
 
+  const cpuChoosesLetter = async (): Promise<void> => {
+    debugger
+    let newValidWords: string[] = getValidWords(validWordList, characterString.join('')); 
+    let nextValidWord: string = getRandomValidWord(newValidWords, characterString.length);   
+    if (!nextValidWord) {
+      setMessage("You lose!");
+    }
+    else {
+      let nextCharacter: string = nextValidWord[characterString.length];
+      let newCharacterString: string[] = characterString.concat(nextCharacter.toUpperCase());  
+      if (newCharacterString.join('') === nextValidWord) {
+        setMessage("You win!");
+      }
+      else {
+        setCharacterString(newCharacterString);
+        newValidWords = getValidWords(newValidWords, newCharacterString.join(''));
+        setValidWordList(newValidWords);
+      }
+    }
+    setCpuTurn(false);
+    setLetterAdded(false);
+  };
 
-
-  const handleKeySelected = (key: string): void => {
+  const handleKeySelected = async (key: string): Promise<void> => {
+    //debugger
     if (letterAdded && key === Keys.Enter) {
+      //debugger
       // Run logic to check if this letter combo is valid
       let newValidWords: string[] = getValidWords(validWordList, characterString.join(''));
       if (newValidWords.length) {
         setMessage("Valid combo!");
-        setTimeout(() => setMessage(""), 1000)
+        await setTimeout(() => setMessage(""), 1000);
+        setValidWordList(newValidWords);
         setCpuTurn(true);
+        await setTimeout(() => cpuChoosesLetter(), 1000);
       }
       else {
         setMessage("Nope!");
-        setTimeout(() => setMessage(""), 1000)
+        await setTimeout(() => setMessage(""), 1000);
         setCharacterString(characterString.slice(0, -1));
         setLetterAdded(false);
       }
@@ -75,8 +101,11 @@ function App() {
         <Header />
       </Stack>
       <Stack direction="row" justifyContent="space-between">
-        <HitPoints currentHP={cpuHP}/>        
-        <MessageCenter message={message} cpuThinking={cpuTurn}/>
+        <HitPoints currentHP={cpuHP}/>
+        <Stack>
+          <MessageCenter message={message}/>
+          {cpuTurn && <Loader />}
+        </Stack>
         <HitPoints currentHP={userHP}/>
       </Stack>
       <Stack alignItems="center">

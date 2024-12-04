@@ -1,18 +1,10 @@
 import { Stack } from "@mui/material";
 import { MessageCenterProps } from "../interfaces/messageCenter";
 
-export default function MessageCenter({message, cpuThinking}: MessageCenterProps) {
-    
-    const content = (): JSX.Element => {
-        if (cpuThinking) 
-            return <div className="loader"></div>;
-        else 
-            return <div>{message}</div>;    
-    };
-    
+export default function MessageCenter({message}: MessageCenterProps) {
     return (
         <Stack>
-            {content()}
+            <div>{message}</div>
         </Stack>
     );
 }
