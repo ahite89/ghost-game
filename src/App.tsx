@@ -76,7 +76,7 @@ function App() {
       </Stack>
       <Stack direction="row" justifyContent="space-between">
         <HitPoints currentHP={cpuHP}/>        
-        <MessageCenter message={message}/>
+        <MessageCenter message={message} cpuThinking={cpuTurn}/>
         <HitPoints currentHP={userHP}/>
       </Stack>
       <Stack alignItems="center">
