@@ -96,7 +96,7 @@ function App() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Stack alignItems="center">
         <Header />
       </Stack>

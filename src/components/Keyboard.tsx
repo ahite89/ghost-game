@@ -19,7 +19,7 @@ export default function Keyboard({handleKeySelected, cpuTurn}: KeyboardProps) {
     });
 
     return (
-        <Grid container spacing={{ xs: 0.5, md: 0.5 }} columns={{ xs: 8, sm: 8, md: 8 }}>
+        <Grid justifyContent="center" container spacing={{ xs: 0.5, md: 0.5 }} columns={{ xs: 8, sm: 8, md: 8 }}>
            <Grid>
                 {renderedKeys.slice(0, 10)}
             </Grid>
