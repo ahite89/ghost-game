@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import allWordsFromDictionary from './api/dictionary';
 
-import { getRandomCharacter } from './services/character';
-import { getValidWords, getRandomValidWord } from './services/words';
+import { getTwoRandomCharacters } from './services/character';
+import { getValidWords, getRandomValidWord, getLongestValidWordLength } from './services/words';
 
 import { FULL_HP_ARRAY } from './constants/hitPoints';
 import { Keys } from './constants/keyboard';
@@ -32,29 +32,41 @@ function App() {
   const [letterAdded, setLetterAdded] = useState<boolean>(false);
 
   useEffect(() => {
-    //debugger
-    let allWords: string[] = allWordsFromDictionary;
-    let randomCharacter: string = getRandomCharacter();
-    setCharacterString([randomCharacter]);
-    let newValidWords: string[] = getValidWords(allWords, randomCharacter);
-    setValidWordList(newValidWords);
+    startNewRound();
   }, []);
+
+  const startNewRound = (): void => {
+    const startingTwoCharacters: string[] = getTwoRandomCharacters(allWordsFromDictionary);
+    setCharacterString([startingTwoCharacters[0], startingTwoCharacters[1]]);
+    const newValidWords: string[] = getValidWords(allWordsFromDictionary, startingTwoCharacters.join(''));
+    setValidWordList(newValidWords);
+  };
 
   const cpuChoosesLetter = async (): Promise<void> => {
     debugger
-    let newValidWords: string[] = getValidWords(validWordList, characterString.join('')); 
-    let nextValidWord: string = getRandomValidWord(newValidWords, characterString.length);   
+    let nextValidWord: string, newValidWords: string[];
+
+    newValidWords = getValidWords(validWordList, characterString.join('')); 
+    nextValidWord = getRandomValidWord(newValidWords, characterString.length);  
     if (!nextValidWord) {
       setMessage("You lose!");
+      await setTimeout(() => setMessage(""), 2000);
+      setUserHP(userHP.slice(0, -1));
+      await setTimeout(() => startNewRound(), 2000);
     }
     else {
-      let nextCharacter: string = nextValidWord[characterString.length];
-      let newCharacterString: string[] = characterString.concat(nextCharacter.toUpperCase());  
-      if (newCharacterString.join('') === nextValidWord) {
+      const nextCharacter: string = nextValidWord[characterString.length];
+      const newCharacterString: string[] = characterString.concat(nextCharacter.toUpperCase());  
+      setCharacterString(newCharacterString);
+      // const longestValidWordLength = getLongestValidWordLength(newValidWords);
+      nextValidWord = getRandomValidWord(newValidWords, newCharacterString.length);
+      if (!nextValidWord) {
         setMessage("You win!");
+        await setTimeout(() => setMessage(""), 2000);
+        setCpuHP(cpuHP.slice(0, -1));
+        await setTimeout(() => startNewRound(), 2000);
       }
       else {
-        setCharacterString(newCharacterString);
         newValidWords = getValidWords(newValidWords, newCharacterString.join(''));
         setValidWordList(newValidWords);
       }
@@ -64,22 +76,19 @@ function App() {
   };
 
   const handleKeySelected = async (key: string): Promise<void> => {
-    //debugger
     if (letterAdded && key === Keys.Enter) {
-      //debugger
       // Run logic to check if this letter combo is valid
-      let newValidWords: string[] = getValidWords(validWordList, characterString.join(''));
+      const newValidWords: string[] = getValidWords(validWordList, characterString.join(''));
       if (newValidWords.length) {
-        setMessage("Valid combo!");
         await setTimeout(() => setMessage(""), 1000);
         setValidWordList(newValidWords);
         setCpuTurn(true);
         await setTimeout(() => cpuChoosesLetter(), 1000);
       }
       else {
-        setMessage("Nope!");
+        setMessage("Not in word list");
         await setTimeout(() => setMessage(""), 1000);
-        setCharacterString(characterString.slice(0, -1));
+        await setTimeout(() => setCharacterString(characterString.slice(0, -1)), 1000);
         setLetterAdded(false);
       }
     }
@@ -89,7 +98,7 @@ function App() {
       setLetterAdded(false);
     }
     else if (!letterAdded && key !== Keys.Delete && key !== Keys.Enter) {
-      let newGuessString = characterString.concat(key);
+      const newGuessString = characterString.concat(key);
       setCharacterString(newGuessString);
       setLetterAdded(true);
     }
