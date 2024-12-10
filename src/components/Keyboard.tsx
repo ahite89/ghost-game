@@ -3,7 +3,7 @@ import { keyOptions } from "../constants/keyboard";
 import { KeyboardProps } from "../interfaces/keyboard";
 import { Grid2 as Grid } from "@mui/material";
 
-export default function Keyboard({handleKeySelected, cpuTurn}: KeyboardProps) {
+export default function Keyboard({handleKeySelected, disableKeyboard}: KeyboardProps) {
 
     const renderedKeys = keyOptions().map(key => {
         return (
@@ -11,7 +11,7 @@ export default function Keyboard({handleKeySelected, cpuTurn}: KeyboardProps) {
                 onClick={handleKeySelected} 
                 key={key.name}
                 keyName={key.name}
-                cpuTurn={cpuTurn}
+                disableKeyboard={disableKeyboard}
             >
                 {key.name}
             </Key>

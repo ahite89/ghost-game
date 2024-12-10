@@ -1,7 +1,7 @@
 import { KeyProps } from "../interfaces/key";
 import { Button } from "@mui/material";
 
-export default function Key({ keyName, children, cpuTurn, onClick }: KeyProps) {
+export default function Key({ keyName, children, disableKeyboard, onClick }: KeyProps) {
 
     const handleKeyClick = () => {
         onClick(keyName);
@@ -12,9 +12,9 @@ export default function Key({ keyName, children, cpuTurn, onClick }: KeyProps) {
             style={{margin: '.2rem'}}
             onClick={handleKeyClick} 
             variant="outlined"
-            disabled={cpuTurn}
+            disabled={disableKeyboard}
         >
             {children}
-        </Button>         
+        </Button>
     );
 }

@@ -3,6 +3,6 @@ import { ReactNode } from 'react';
 export interface KeyProps {
     keyName: string,
     children: ReactNode,
-    cpuTurn: boolean,
+    disableKeyboard: boolean,
     onClick: (key: string) => void
 }

@@ -7,7 +7,3 @@ export const getRandomValidWord = (validWords: string[], characterStringLength: 
     let randomIndex = Math.floor(Math.random() * longerWords.length);
     return longerWords[randomIndex];
 };
-
-export const getLongestValidWordLength = (validWords: string[]): number => {
-    return Math.max(...(validWords.map(word => word.length)));
-};
