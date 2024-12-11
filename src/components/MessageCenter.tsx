@@ -1,10 +1,10 @@
-import { Stack } from "@mui/material";
+import { Box } from "@mui/material";
 import { MessageCenterProps } from "../interfaces/messageCenter";
 
 export default function MessageCenter({message}: MessageCenterProps) {
     return (
-        <Stack>
+        <Box>
             <div>{message}</div>
-        </Stack>
+        </Box>
     );
 }

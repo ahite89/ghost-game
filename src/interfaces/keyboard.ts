@@ -1,4 +1,4 @@
-import { KeyProps } from "./key"
+import { KeyProps } from "./key";
 
 export interface KeyboardProps {
     keys?: KeyProps[],

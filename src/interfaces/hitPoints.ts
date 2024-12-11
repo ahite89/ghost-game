@@ -1,5 +1,7 @@
-import { HitPointProps } from "./hitPoint"
+import { HitPointProps } from "./hitPoint";
+import { Player } from "../constants/player";
 
 export interface HitPointsProps {
-    currentHP: HitPointProps[]
+    currentHP: HitPointProps[],
+    player: Player
 }

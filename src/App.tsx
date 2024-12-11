@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import allWordsFromDictionary from './api/dictionary';
 
 import { getTwoRandomLetters } from './services/letter';
 import { getValidWords, getRandomValidWord } from './services/words';
 
-import { FULL_HP_ARRAY, STARTING_HP_COUNT } from './constants/hitPoints';
+import { FULL_HP_ARRAY } from './constants/hitPoints';
 import { Keys } from './constants/keyboard';
-import { Winner } from './constants/player';
+import { Player, Winner } from './constants/player';
 
 import LetterString from './components/LetterString';
 import Header from './components/Header';
@@ -15,6 +15,7 @@ import HitPoints from './components/HitPoints';
 import Keyboard from './components/Keyboard';
 import MessageCenter from './components/MessageCenter';
 import Loader from './components/Loader';
+import NewGame from './components/NewGame';
 
 import { HitPointProps } from './interfaces/hitPoint';
 
@@ -28,7 +29,8 @@ function App() {
   const [letterString, setLetterString] = useState<string[]>([]);
   const [validWordList, setValidWordList] = useState<string[]>(['']);
   const [disableKeyboard, setDisableKeyboard] = useState<boolean>(false);
-  const [gameRound, setGameRound] = useState<number>(1);
+  const [roundsWon, setRoundsWon] = useState<number>(0);
+  const [gameOver, setGameOver] = useState<boolean>(false);
   const [isLetterEntered, setIsLetterEntered] = useState<boolean>(false);
   const [gameWinner, setGameWinner] = useState<Winner>(Winner.None);
 
@@ -48,6 +50,8 @@ function App() {
   const startNewGame = (): void => {
     setUserHP(FULL_HP_ARRAY);
     setCpuHP(FULL_HP_ARRAY);
+    setDisableKeyboard(false);
+    setGameOver(false);
     startNewRound();
   };
 
@@ -58,7 +62,7 @@ function App() {
     setValidWordList(newValidWords);
   };
 
-  const declareGameWinner = (winner: Winner): void => {
+  const declareGameWinner = async (winner: Winner): Promise<void> => {
     setGameWinner(winner);
     setDisableKeyboard(true);
     if (winner === Winner.CPU) {
@@ -67,13 +71,13 @@ function App() {
     else if (winner === Winner.User) {
       setMessage("You're a winner!");
     }
+    await setTimeout(() => setGameOver(true), 2000);
   };
 
   const declareRoundWinner = async (message: string, winner: Winner): Promise<void> => {
     setMessage(message);
     await setTimeout(() => setMessage(""), 2000);
-    winner == Winner.CPU ? setUserHP(userHP.slice(0, -1)) : setCpuHP(cpuHP.slice(0, -1));
-    // await setTimeout(() => startNewRound(), 2000);
+    winner === Winner.CPU ? setUserHP(userHP.slice(0, -1)) : setCpuHP(cpuHP.slice(0, -1));
   };
 
   const cpuGameplay = async (): Promise<void> => {
@@ -104,6 +108,7 @@ function App() {
   };
 
   const userGameplay = async (): Promise<void> => {
+    debugger
     const newValidWords: string[] = getValidWords(validWordList, letterString.join(''));
       if (newValidWords.length) {
         await setTimeout(() => setMessage(""), 1000);
@@ -137,23 +142,32 @@ function App() {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="sm">
       <Stack alignItems="center">
         <Header />
       </Stack>
-      <Stack direction="row" justifyContent="space-between">
-        <HitPoints currentHP={cpuHP}/>
-        <Stack>
-          <MessageCenter message={message}/>
-          {disableKeyboard && gameWinner === Winner.None && <Loader />}
-        </Stack>
-        <HitPoints currentHP={userHP}/>
-      </Stack>
-      <Stack alignItems="center">
-        <LetterString letters={letterString} />
-        {validWordList[0]}
-      </Stack>
-      <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected}/>
+      {!gameOver &&
+        <>
+          <Stack alignItems="center" direction="row" justifyContent="space-between">
+            <HitPoints player={Player.CPU} currentHP={cpuHP}/>
+            <Stack sx={{ py: 3 }}>
+              <MessageCenter message={message}/>
+              {(disableKeyboard && gameWinner === Winner.None) &&
+              <Loader />
+              }
+            </Stack>
+            <HitPoints player={Player.User} currentHP={userHP}/>
+          </Stack>
+          <Stack sx={{ py: 3 }} alignItems="center">
+            <LetterString letters={letterString} />
+            {validWordList[0]}
+          </Stack>
+          <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected}/>
+        </>
+      }
+      {gameOver &&
+        <NewGame onClick={startNewGame} message='Play again?' />
+      }
     </Container>
   );
 }

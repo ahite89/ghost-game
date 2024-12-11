@@ -29,10 +29,16 @@ export enum Keys {
     Delete = 'Delete'
 };
 
-export const keyOptions = () => {
-    const keys = [];
-    for (let key of Object.values(Keys)) {
-        keys.push({ name: key })
-    }
-    return keys;
-}
+export const keyboardOptions: string[][] = [
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+    ['Enter','Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Delete']
+];
+
+// export const keyOptions = () => {
+//     const keys = [];
+//     for (let key of Object.values(Keys)) {
+//         keys.push({ name: key })
+//     }
+//     return keys;
+// }
