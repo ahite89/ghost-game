@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import allWordsFromDictionary from './api/dictionary';
 
@@ -50,6 +50,7 @@ function App() {
   const startNewGame = (): void => {
     setUserHP(FULL_HP_ARRAY);
     setCpuHP(FULL_HP_ARRAY);
+    setRoundsWon(0);
     setDisableKeyboard(false);
     setGameOver(false);
     startNewRound();
@@ -96,6 +97,7 @@ function App() {
       setLetterString(newLetterString);
       nextValidWord = getRandomValidWord(newValidWords, newLetterString.length);
       if (!nextValidWord) {
+        setRoundsWon(roundsWon + 1);
         await declareRoundWinner("Well done!", Winner.User);
       }
       else {
@@ -166,7 +168,7 @@ function App() {
         </>
       }
       {gameOver &&
-        <NewGame onClick={startNewGame} message='Play again?' />
+        <NewGame onClick={startNewGame} message='Play again?' roundsWon={roundsWon}/>
       }
     </Container>
   );
