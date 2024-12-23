@@ -9,7 +9,7 @@ export default function Key({ keyName, children, disableKeyboard, onClick }: Key
 
     return (
         <Button 
-            style={{margin: '.2rem'}}
+            style={{margin: ".2rem", color: "black", borderColor: "black"}}
             onClick={handleKeyClick} 
             variant="outlined"
             disabled={disableKeyboard}

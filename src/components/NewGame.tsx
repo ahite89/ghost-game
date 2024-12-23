@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { NewGameProps } from '../interfaces/newGame';
-import { Button, Box, Typography } from '@mui/material';
+import { Button, Box, Typography, Stack } from '@mui/material';
 
 export default function NewGame({ 
     message,
@@ -13,11 +13,13 @@ export default function NewGame({
       }, [roundsWon]);
 
     return (
-        <Box sx={{ m: 2, p: 2, display: 'flex', justifyContent: 'center' }}>
-            <Typography>You won {numberOfRoundsWon} rounds!</Typography>
-            <Button style={{margin: '.2rem'}} variant='outlined' onClick={() => onClick()}>
-                {message}
-            </Button>
+        <Box sx={{ m: 2, p: 2, display: "flex", justifyContent: "center" }}>
+            <Stack alignItems="center">
+                <Typography paddingBottom="2rem">You won {numberOfRoundsWon} rounds!</Typography>
+                <Button style={{margin: ".2rem", color: "black", borderColor: "black"}} variant='outlined' onClick={() => onClick()}>
+                    {message}
+                </Button>
+            </Stack>
         </Box>
     );
 }

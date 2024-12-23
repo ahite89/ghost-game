@@ -3,5 +3,5 @@ import { Player } from "../constants/player";
 
 export interface HitPointsProps {
     currentHP: HitPointProps[],
-    player: Player
+    player?: Player
 }

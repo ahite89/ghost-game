@@ -1,9 +1,10 @@
-export const getValidWords = (wordList: string[], characters: string): string[] => {
-    return wordList.filter(word => word.startsWith(characters.toLowerCase()));
+export const getValidWords = (wordList: string[], letters: string): string[] => {
+    return wordList.filter(word => word.startsWith(letters.toLowerCase()));
 };
 
-export const getRandomValidWord = (validWords: string[], characterStringLength: number): string => {
-    let longerWords = validWords.filter(word => word.length > characterStringLength);
-    let randomIndex = Math.floor(Math.random() * longerWords.length);
+export const getRandomValidWord = (validWords: string[], letterString: string[]): string => {
+    let longerWords = validWords.filter(word => word.length > letterString.length);
+    let validLongerWords = longerWords.filter(longWord => longWord.includes(letterString.join("")));
+    let randomIndex = Math.floor(Math.random() * validLongerWords.length);
     return longerWords[randomIndex];
 };

@@ -1,11 +1,10 @@
 import { HitPointsProps } from "../interfaces/hitPoints";
 import HitPoint from "./HitPoint";
-import { Player } from "../constants/player";
-import { FaHeart, FaGhost } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 
-export default function HitPoints({currentHP, player}: HitPointsProps) {
+export default function HitPoints({currentHP}: HitPointsProps) {
 
-    const hpIcon = player === Player.User ? <FaHeart /> : <FaGhost />;
+    const hpIcon = <FaHeart />;
 
     const renderedHitPoints = currentHP.map(hitPoint => {
         return (
@@ -14,7 +13,7 @@ export default function HitPoints({currentHP, player}: HitPointsProps) {
     });
 
     return (
-        <div>
+        <div style={{display: "flex", flexDirection: "row"}}>
             {renderedHitPoints}
         </div>
     );
