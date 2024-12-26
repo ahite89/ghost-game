@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { Container, Stack } from '@mui/material';
 
 import allWordsFromDictionary from './api/dictionary';
 
@@ -7,7 +8,7 @@ import { getValidWords, getRandomValidWord } from './services/words';
 
 import { FULL_HP_ARRAY } from './constants/hitPoints';
 import { Keys } from './constants/keyboard';
-import { Player, Winner } from './constants/player';
+import { Winner } from './constants/player';
 
 import LetterString from './components/LetterString';
 import Header from './components/Header';
@@ -18,8 +19,6 @@ import Loader from './components/Loader';
 import NewGame from './components/NewGame';
 
 import { HitPointProps } from './interfaces/hitPoint';
-
-import { Container, Stack } from '@mui/material';
 
 function App() {
 
@@ -32,6 +31,7 @@ function App() {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [isLetterEntered, setIsLetterEntered] = useState<boolean>(false);
   const [gameWinner, setGameWinner] = useState<Winner>(Winner.None);
+  const [cursorBlinking, setCursorBlinking] = useState<boolean>(true);
 
   useEffect(() => {
     if (userHP.length === 0) {
@@ -81,6 +81,7 @@ function App() {
   const cpuGameplay = async (): Promise<void> => {
     debugger
     
+    setCursorBlinking(false);
     let nextValidWord: string, newValidWords: string[];
     newValidWords = getValidWords(validWordList, letterString.join('')); 
     nextValidWord = getRandomValidWord(newValidWords, letterString);  
@@ -101,8 +102,13 @@ function App() {
         setValidWordList(newValidWords);
       }
     }
+    await transitionToUserTurn();
+  };
+
+  const transitionToUserTurn = async (): Promise<void> => {
     setDisableKeyboard(false);
     setIsLetterEntered(false);
+    setCursorBlinking(true);
   };
 
   const userGameplay = async (): Promise<void> => {
@@ -122,6 +128,7 @@ function App() {
   };
 
   const handleKeySelected = async (key: string): Promise<void> => {
+    setCursorBlinking(true);
     if (isLetterEntered && key === Keys.Enter) {
       // Run logic to check if this letter combo is valid
       await userGameplay();
@@ -132,6 +139,7 @@ function App() {
       setIsLetterEntered(false);
     }
     else if (!isLetterEntered && key !== Keys.Delete && key !== Keys.Enter) {
+      setCursorBlinking(false);
       const newGuessString = letterString.concat(key);
       setLetterString(newGuessString);
       setIsLetterEntered(true);
@@ -156,7 +164,7 @@ function App() {
             }
           </Stack>
           <Stack sx={{ py: 3 }} alignItems="center">
-            <LetterString letters={letterString} />
+            <LetterString letters={letterString} cursorBlinking={cursorBlinking} />
             {validWordList.length} words remaining
           </Stack>
           <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected}/>

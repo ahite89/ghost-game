@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 
 export default function HitPoints({currentHP}: HitPointsProps) {
 
-    const hpIcon = <FaHeart />;
+    const hpIcon = <FaHeart size={28} />;
 
     const renderedHitPoints = currentHP.map(hitPoint => {
         return (

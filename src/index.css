@@ -31,3 +31,21 @@ code {
     60%{background-position:0%  50%, 50% 100%,100%   0%}
     80%{background-position:0%  50%, 50%  50%,100% 100%}
 }
+
+.blinkingCursor::after {
+  content: "";
+  width: .15rem;
+  height: 2.7rem;
+  background: black;
+  display: inline-block;
+}
+
+@keyframes cursor-blink {
+  0% {
+    opacity: 0;
+  }
+}
+
+.blinkingCursor::after {
+  animation: cursor-blink 1.2s steps(2) infinite;
+}

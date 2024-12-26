@@ -1,3 +1,4 @@
 export interface LetterStringProps {
-    letters: string[]
+    letters: string[],
+    cursorBlinking: boolean
 }

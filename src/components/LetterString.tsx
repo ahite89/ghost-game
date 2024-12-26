@@ -1,12 +1,20 @@
 import { LetterStringProps } from "../interfaces/letterString";
-import { Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
-export default function LetterString({letters}: LetterStringProps) {
+export default function LetterString({letters, cursorBlinking}: LetterStringProps) {
+
+
+    // Blinking cursor
+    // https://www.amitmerchant.com/simple-blinking-cursor-animation-using-css/
+
     return (
-        <div>
-            <Typography variant="h2" fontWeight="400">
+        <Stack direction="row">
+            <Typography sx={{paddingRight: ".5rem"}} className="letterString" variant="h2" fontWeight="400">
                 {letters.join('')}
             </Typography>
-        </div>
+            {cursorBlinking &&
+                <Typography className="blinkingCursor" variant="h2"></Typography>
+            }
+        </Stack>
     );
 }
