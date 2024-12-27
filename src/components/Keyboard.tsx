@@ -1,5 +1,5 @@
 import Key from "./Key";
-import { keyboardOptions } from "../constants/keyboard";
+import { keyboardOptions, Keys } from "../constants/keyboard";
 import { KeyboardProps } from "../interfaces/keyboard";
 import { Stack } from "@mui/material";
 
@@ -7,7 +7,7 @@ export default function Keyboard({handleKeySelected, disableKeyboard}: KeyboardP
 
     const renderedKeys = keyboardOptions.map((keyboardRow, rowIndex) => {
         return (
-            <div key={rowIndex}>
+            <div className="keyboard" key={rowIndex}>
                 {keyboardRow.map((key, keyIndex) => 
                     <Key 
                         onClick={handleKeySelected} 
@@ -15,7 +15,7 @@ export default function Keyboard({handleKeySelected, disableKeyboard}: KeyboardP
                         keyName={key}
                         disableKeyboard={disableKeyboard}
                     >
-                        {key}
+                        {key === Keys.Delete ? "X" : key}
                     </Key>
                 )}
             </div>  

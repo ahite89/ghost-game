@@ -1,5 +1,5 @@
+import { Keys } from "../constants/keyboard";
 import { KeyProps } from "../interfaces/key";
-import { Button } from "@mui/material";
 
 export default function Key({ keyName, children, disableKeyboard, onClick }: KeyProps) {
 
@@ -7,14 +7,16 @@ export default function Key({ keyName, children, disableKeyboard, onClick }: Key
         onClick(keyName);
     };
 
+    const actionKeyClass = keyName === (Keys.Enter || Keys.Delete) ? "actionKey" : "";
+
+    debugger
     return (
-        <Button 
-            style={{margin: ".2rem", color: "black", borderColor: "black"}}
+        <button
+            className={"key " + actionKeyClass}
             onClick={handleKeyClick} 
-            variant="outlined"
             disabled={disableKeyboard}
         >
             {children}
-        </Button>
+        </button>
     );
 }

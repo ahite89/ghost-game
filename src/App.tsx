@@ -17,6 +17,7 @@ import Keyboard from './components/Keyboard';
 import MessageCenter from './components/MessageCenter';
 import Loader from './components/Loader';
 import NewGame from './components/NewGame';
+import Score from './components/Score';
 
 import { HitPointProps } from './interfaces/hitPoint';
 
@@ -147,14 +148,14 @@ function App() {
   };
 
   return (
-    <Container maxWidth="md" sx={{padding: "2rem", backgroundColor: "white"}}>
+    <Container maxWidth="sm" sx={{padding: "2rem", backgroundColor: "white"}}>
       <Stack alignItems="center">
         <Header />
       </Stack>    
       {!gameOver &&
         <>
           <Stack direction="row" justifyContent="space-between">
-            Rounds won: {roundsWon}
+            <Score roundsWon={roundsWon} />
             <HitPoints currentHP={userHP}/>
           </Stack>
           <Stack sx={{ py: 3 }} alignItems="center">

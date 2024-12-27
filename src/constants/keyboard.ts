@@ -34,11 +34,3 @@ export const keyboardOptions: string[][] = [
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
     ['Enter','Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Delete']
 ];
-
-// export const keyOptions = () => {
-//     const keys = [];
-//     for (let key of Object.values(Keys)) {
-//         keys.push({ name: key })
-//     }
-//     return keys;
-// }
