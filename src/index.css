@@ -13,7 +13,6 @@ code {
     monospace;
 }
 
-/* HTML: <div class="loader"></div> */
 .loader {
   width: 30px;
   aspect-ratio: 2;

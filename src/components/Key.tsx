@@ -9,7 +9,6 @@ export default function Key({ keyName, children, disableKeyboard, onClick }: Key
 
     const actionKeyClass = keyName === (Keys.Enter || Keys.Delete) ? "actionKey" : "";
 
-    debugger
     return (
         <button
             className={"key " + actionKeyClass}

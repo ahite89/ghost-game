@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, Stack } from '@mui/material';
 
-import allWordsFromDictionary from './api/dictionary';
+import allValidWordsFromDictionary from './api/dictionary';
 
 import { getTwoRandomLetters } from './services/letter';
 import { getValidWords, getRandomValidWord } from './services/words';
@@ -53,9 +53,9 @@ function App() {
   };
 
   const startNewRound = (): void => {
-    const startingTwoLetters: string[] = getTwoRandomLetters(allWordsFromDictionary);
+    const startingTwoLetters: string[] = getTwoRandomLetters(allValidWordsFromDictionary);
     setLetterString([startingTwoLetters[0], startingTwoLetters[1]]);
-    const newValidWords: string[] = getValidWords(allWordsFromDictionary, startingTwoLetters.join(''));
+    const newValidWords: string[] = getValidWords(allValidWordsFromDictionary, startingTwoLetters.join(''));
     setValidWordList(newValidWords);
   };
 
