@@ -60,28 +60,26 @@ function App() {
   };
 
   const declareGameWinner = async (winner: Winner): Promise<void> => {
-    setGameWinner(winner);
-    setDisableKeyboard(true);
-    // if (winner === Winner.CPU) {
-    //   setMessage("Better luck next time!");
-    // }
-    await setTimeout(() => setGameOver(true), 2000);
+    const gameWinnerCallback = () => {
+      setGameWinner(winner);
+      setDisableKeyboard(true);
+      setGameOver(true);
+    };
+    await pauseGameplayThenCallback(gameWinnerCallback, 2000);
   };
 
   const declareRoundWinner = async (message: string, winner: Winner): Promise<void> => {
+    setDisableKeyboard(false);
     setMessage(message);
-    await setTimeout(() => setMessage(""), 2000);
-    if (winner === Winner.CPU) {
-      await setTimeout(() => setUserHP(userHP.slice(0, -1)), 2000);     
-    }
-    else {
-      await setTimeout(() => setRoundsWon(roundsWon + 1), 2000);    
-    }
+    const roundWinnerCallback = () => {
+      transitionToUserTurn();
+      setMessage("");
+      winner === Winner.CPU ? setUserHP(userHP.slice(0, -1)) : setRoundsWon(roundsWon + 1);         
+    };
+    await pauseGameplayThenCallback(roundWinnerCallback, 2000);
   };
 
   const cpuGameplay = async (): Promise<void> => {
-    debugger
-    
     setCursorBlinking(false);
     let nextValidWord: string, newValidWords: string[];
     newValidWords = getValidWords(validWordList, letterString.join('')); 
@@ -99,40 +97,50 @@ function App() {
         await declareRoundWinner("Well done!", Winner.User);
       }
       else {
+        setDisableKeyboard(false);
         newValidWords = getValidWords(newValidWords, newLetterString.join(''));
         setValidWordList(newValidWords);
+        transitionToUserTurn();
       }
     }
-    await transitionToUserTurn();
   };
 
-  const transitionToUserTurn = async (): Promise<void> => {
-    setDisableKeyboard(false);
+  const transitionToUserTurn = ():void => {
     setIsLetterEntered(false);
     setCursorBlinking(true);
   };
 
-  const userGameplay = async (): Promise<void> => {
+  const checkWordValidity = async (): Promise<void> => {
     const newValidWords: string[] = getValidWords(validWordList, letterString.join(''));
       if (newValidWords.length) {
-        await setTimeout(() => setMessage(""), 1000);
-        setValidWordList(newValidWords);
         setDisableKeyboard(true);
-        await setTimeout(() => cpuGameplay(), 1000);
+        const validWordCallback = () => {
+          setMessage("");
+          setValidWordList(newValidWords);
+          cpuGameplay();
+        };
+        await pauseGameplayThenCallback(validWordCallback, 1000);
       }
       else {
         setMessage("Not in word list");
-        await setTimeout(() => setMessage(""), 1000);
-        await setTimeout(() => setLetterString(letterString.slice(0, -1)), 1000);
-        setIsLetterEntered(false);
+        const invalidWordCallback = () => {
+          setMessage("");
+          setLetterString(letterString.slice(0, -1));
+          setIsLetterEntered(false);
+          setCursorBlinking(true);
+        };
+        await pauseGameplayThenCallback(invalidWordCallback, 1000);
       }
   };
 
+  const pauseGameplayThenCallback = async (callback: () => void, milliseconds: number): Promise<void> => {
+    await setTimeout(callback, milliseconds);
+  };
+
   const handleKeySelected = async (key: string): Promise<void> => {
-    setCursorBlinking(true);
     if (isLetterEntered && key === Keys.Enter) {
       // Run logic to check if this letter combo is valid
-      await userGameplay();
+      await checkWordValidity();
     }
     else if (isLetterEntered && key === Keys.Delete) {
       // Remove newly-entered key from string
@@ -156,10 +164,10 @@ function App() {
         <>
           <Stack direction="row" justifyContent="space-between">
             <Score roundsWon={roundsWon} />
-            <HitPoints currentHP={userHP}/>
+            <HitPoints currentHP={userHP} />
           </Stack>
           <Stack sx={{ py: 3 }} alignItems="center">
-            <MessageCenter message={message}/>
+            <MessageCenter message={message} />
             {(disableKeyboard && gameWinner === Winner.None) &&
               <Loader />
             }
@@ -168,11 +176,11 @@ function App() {
             <LetterString letters={letterString} cursorBlinking={cursorBlinking} />
             {validWordList.length} words remaining
           </Stack>
-          <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected}/>
+          <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected} />
         </>
       }
       {gameOver &&
-        <NewGame onClick={startNewGame} message='Play again?' roundsWon={roundsWon}/>
+        <NewGame onClick={startNewGame} message='Play again?' roundsWon={roundsWon} />
       }
     </Container>
   );
