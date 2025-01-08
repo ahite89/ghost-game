@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Stack } from '@mui/material';
+import { Container, Stack, Divider } from '@mui/material';
 
 import allValidWordsFromDictionary from './api/dictionary';
 
@@ -18,10 +18,19 @@ import MessageCenter from './components/MessageCenter';
 import Loader from './components/Loader';
 import NewGame from './components/NewGame';
 import Score from './components/Score';
+import Snackbar from './components/Snackbar';
 
 import { HitPointProps } from './interfaces/hitPoint';
+import { SnackbarProps } from './interfaces/snackbar';
 
 function App() {
+
+  const defaultSnackbarState: SnackbarProps = { 
+    showSnackbar: false,
+    message: '',
+    displayDuration: 0,
+    closeSnackbar: () => {}
+  };
 
   const [userHP, setUserHP] = useState<HitPointProps[]>(FULL_HP_ARRAY);
   const [message, setMessage] = useState<string>('');
@@ -33,6 +42,11 @@ function App() {
   const [isLetterEntered, setIsLetterEntered] = useState<boolean>(false);
   const [gameWinner, setGameWinner] = useState<Winner>(Winner.None);
   const [cursorBlinking, setCursorBlinking] = useState<boolean>(true);
+  const [snackbarState, setSnackbarState] = useState<SnackbarProps>(defaultSnackbarState);
+
+  const handleCloseSnackbar = () => {
+    setSnackbarState({...snackbarState, showSnackbar: false});
+  };
 
   useEffect(() => {
     if (userHP.length === 0) {
@@ -60,6 +74,7 @@ function App() {
   };
 
   const declareGameWinner = async (winner: Winner): Promise<void> => {
+    setCursorBlinking(false);
     const gameWinnerCallback = () => {
       setGameWinner(winner);
       setDisableKeyboard(true);
@@ -70,10 +85,9 @@ function App() {
 
   const declareRoundWinner = async (message: string, winner: Winner): Promise<void> => {
     setDisableKeyboard(false);
-    setMessage(message);
+    setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 2000});
     const roundWinnerCallback = () => {
       transitionToUserTurn();
-      setMessage("");
       winner === Winner.CPU ? setUserHP(userHP.slice(0, -1)) : setRoundsWon(roundsWon + 1);         
     };
     await pauseGameplayThenCallback(roundWinnerCallback, 2000);
@@ -115,21 +129,19 @@ function App() {
       if (newValidWords.length) {
         setDisableKeyboard(true);
         const validWordCallback = () => {
-          setMessage("");
           setValidWordList(newValidWords);
           cpuGameplay();
         };
         await pauseGameplayThenCallback(validWordCallback, 1000);
       }
       else {
-        setMessage("Not in word list");
+        setSnackbarState({...snackbarState, showSnackbar: true, message: "Not in word list", displayDuration: 2000});
         const invalidWordCallback = () => {
-          setMessage("");
           setLetterString(letterString.slice(0, -1));
           setIsLetterEntered(false);
           setCursorBlinking(true);
         };
-        await pauseGameplayThenCallback(invalidWordCallback, 1000);
+        await pauseGameplayThenCallback(invalidWordCallback, 2000);
       }
   };
 
@@ -146,6 +158,7 @@ function App() {
       // Remove newly-entered key from string
       setLetterString(letterString.slice(0, -1));
       setIsLetterEntered(false);
+      setCursorBlinking(true);
     }
     else if (!isLetterEntered && key !== Keys.Delete && key !== Keys.Enter) {
       setCursorBlinking(false);
@@ -159,10 +172,11 @@ function App() {
     <Container maxWidth="sm" sx={{padding: "2rem", backgroundColor: "white"}}>
       <Stack alignItems="center">
         <Header />
-      </Stack>    
+      </Stack>
+      <Divider sx={{ py: 2}} flexItem />
       {!gameOver &&
         <>
-          <Stack direction="row" justifyContent="space-between">
+          <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
             <Score roundsWon={roundsWon} />
             <HitPoints currentHP={userHP} />
           </Stack>
@@ -182,6 +196,11 @@ function App() {
       {gameOver &&
         <NewGame onClick={startNewGame} message='Play again?' roundsWon={roundsWon} />
       }
+      <Snackbar 
+        showSnackbar={snackbarState.showSnackbar} 
+        message={snackbarState.message}
+        displayDuration={snackbarState.displayDuration} 
+        closeSnackbar={handleCloseSnackbar} />
     </Container>
   );
 }
