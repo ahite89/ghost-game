@@ -1,10 +1,9 @@
-import { ALPHABET_STRING, ALPHABET_LENGTH } from "../constants/letter";
-import { getRandomValidWord, getValidWords } from "./words";
-
-export const getTwoRandomLetters = (allWords: string[]): string[] => {
-    const firstLetter = ALPHABET_STRING.charAt(Math.floor(Math.random() * ALPHABET_LENGTH));
-    const newValidWords: string[] = getValidWords(allWords, firstLetter); 
-    const nextValidWord: string = getRandomValidWord(newValidWords, [firstLetter]);
-    const secondLetter: string = nextValidWord[1].toUpperCase();
-    return (firstLetter + secondLetter).split("");
+export const getTwoRandomLetters = (cpuWordList: string[]): string[] => {
+    const startingWord: string = getRandomStartingWord(cpuWordList);
+    return [startingWord[0].toUpperCase(), startingWord[1].toUpperCase()];
 };
+
+const getRandomStartingWord = (wordList: string[]): string => {
+    let randomIndex = Math.floor(Math.random() * wordList.length);
+    return wordList[randomIndex];
+}

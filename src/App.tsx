@@ -9,6 +9,7 @@ import { getValidWords, getRandomValidWord } from './services/words';
 import { FULL_HP_ARRAY } from './constants/hitPoints';
 import { Keys } from './constants/keyboard';
 import { Winner } from './constants/player';
+import { CPU_WORD_LIST } from './constants/cpuWordList';
 
 import LetterString from './components/LetterString';
 import Header from './components/Header';
@@ -35,7 +36,8 @@ function App() {
   const [userHP, setUserHP] = useState<HitPointProps[]>(FULL_HP_ARRAY);
   const [message, setMessage] = useState<string>('');
   const [letterString, setLetterString] = useState<string[]>([]);
-  const [validWordList, setValidWordList] = useState<string[]>(['']);
+  const [cpuValidWordsList, setCpuValidWordsList] = useState<string[]>(['']);
+  const [allValidWordsList, setAllValidWordsList] = useState<string[]>(['']);
   const [disableKeyboard, setDisableKeyboard] = useState<boolean>(false);
   const [roundsWon, setRoundsWon] = useState<number>(0);
   const [gameOver, setGameOver] = useState<boolean>(false);
@@ -67,10 +69,12 @@ function App() {
   };
 
   const startNewRound = (): void => {
-    const startingTwoLetters: string[] = getTwoRandomLetters(allValidWordsFromDictionary);
+    const startingTwoLetters: string[] = getTwoRandomLetters(CPU_WORD_LIST);
     setLetterString([startingTwoLetters[0], startingTwoLetters[1]]);
-    const newValidWords: string[] = getValidWords(allValidWordsFromDictionary, startingTwoLetters.join(''));
-    setValidWordList(newValidWords);
+    const allValidWords: string[] = getValidWords(allValidWordsFromDictionary, startingTwoLetters.join(''));
+    const cpuValidWords: string[] = getValidWords(CPU_WORD_LIST, startingTwoLetters.join(''));
+    setAllValidWordsList(allValidWords);
+    setCpuValidWordsList(cpuValidWords);
   };
 
   const declareGameWinner = async (winner: Winner): Promise<void> => {
@@ -95,25 +99,25 @@ function App() {
 
   const cpuGameplay = async (): Promise<void> => {
     setCursorBlinking(false);
-    let nextValidWord: string, newValidWords: string[];
-    newValidWords = getValidWords(validWordList, letterString.join('')); 
-    nextValidWord = getRandomValidWord(newValidWords, letterString);  
+    let nextValidCpuWord: string, newValidCpuWords: string[];
+    newValidCpuWords = getValidWords(cpuValidWordsList, letterString.join('')); 
+    nextValidCpuWord = getRandomValidWord(newValidCpuWords, letterString);  
     
-    if (!nextValidWord) {
+    if (!nextValidCpuWord) {
       await declareRoundWinner("Nice try!", Winner.CPU);
     }
     else {
-      const nextLetter: string = nextValidWord[letterString.length];
+      const nextLetter: string = nextValidCpuWord[letterString.length];
       const newLetterString: string[] = letterString.concat(nextLetter.toUpperCase());  
       setLetterString(newLetterString);
-      nextValidWord = getRandomValidWord(newValidWords, newLetterString);
-      if (!nextValidWord) {
+      nextValidCpuWord = getRandomValidWord(newValidCpuWords, newLetterString);
+      if (!nextValidCpuWord) {
         await declareRoundWinner("Well done!", Winner.User);
       }
       else {
         setDisableKeyboard(false);
-        newValidWords = getValidWords(newValidWords, newLetterString.join(''));
-        setValidWordList(newValidWords);
+        newValidCpuWords = getValidWords(newValidCpuWords, newLetterString.join(''));
+        setCpuValidWordsList(newValidCpuWords);
         transitionToUserTurn();
       }
     }
@@ -125,11 +129,11 @@ function App() {
   };
 
   const checkWordValidity = async (): Promise<void> => {
-    const newValidWords: string[] = getValidWords(validWordList, letterString.join(''));
+    const newValidWords: string[] = getValidWords(allValidWordsList, letterString.join(''));
       if (newValidWords.length) {
         setDisableKeyboard(true);
         const validWordCallback = () => {
-          setValidWordList(newValidWords);
+          setAllValidWordsList(newValidWords);
           cpuGameplay();
         };
         await pauseGameplayThenCallback(validWordCallback, 1000);
@@ -188,7 +192,7 @@ function App() {
           </Stack>
           <Stack sx={{ py: 3 }} alignItems="center">
             <LetterString letters={letterString} cursorBlinking={cursorBlinking} />
-            {validWordList.length} words remaining
+            {allValidWordsList.length} words remaining
           </Stack>
           <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected} />
         </>
