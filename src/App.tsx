@@ -98,29 +98,57 @@ function App() {
   };
 
   const cpuGameplay = async (): Promise<void> => {
+    debugger
     setCursorBlinking(false);
     let nextValidCpuWord: string, newValidCpuWords: string[];
     newValidCpuWords = getValidWords(cpuValidWordsList, letterString.join('')); 
     nextValidCpuWord = getRandomValidWord(newValidCpuWords, letterString);  
     
     if (!nextValidCpuWord) {
-      await declareRoundWinner("Nice try!", Winner.CPU);
+      // then look into the all valid words list
+      newValidCpuWords = getValidWords(allValidWordsList, letterString.join(''));
+      nextValidCpuWord = getRandomValidWord(newValidCpuWords, letterString);
+
+      if (!nextValidCpuWord) {
+        await declareRoundWinner("Nice try!", Winner.CPU);
+      }
+      else {
+        await handleValidCpuWord(newValidCpuWords, nextValidCpuWord);
+      }
     }
     else {
-      const nextLetter: string = nextValidCpuWord[letterString.length];
-      const newLetterString: string[] = letterString.concat(nextLetter.toUpperCase());  
-      setLetterString(newLetterString);
-      nextValidCpuWord = getRandomValidWord(newValidCpuWords, newLetterString);
-      if (!nextValidCpuWord) {
+      await handleValidCpuWord(newValidCpuWords, nextValidCpuWord);
+    }
+  };
+
+  const handleValidCpuWord = async (validWordsList: string[], nextValidWord: string): Promise<void> => {
+    const nextLetter: string = nextValidWord[letterString.length];
+    const newLetterString: string[] = letterString.concat(nextLetter.toUpperCase());  
+    setLetterString(newLetterString);
+    nextValidWord = getRandomValidWord(validWordsList, newLetterString);
+    
+    if (!nextValidWord) {
+      // then look into the all valid words list
+      validWordsList = getValidWords(allValidWordsList, letterString.join(''));
+      nextValidWord = getRandomValidWord(validWordsList, letterString);
+      
+      if (!nextValidWord) {
         await declareRoundWinner("Well done!", Winner.User);
       }
       else {
-        setDisableKeyboard(false);
-        newValidCpuWords = getValidWords(newValidCpuWords, newLetterString.join(''));
-        setCpuValidWordsList(newValidCpuWords);
-        transitionToUserTurn();
+        handleFinishCpuTurn(validWordsList, newLetterString);
       }
     }
+    else {
+      handleFinishCpuTurn(validWordsList, newLetterString);
+    }
+  }
+
+  const handleFinishCpuTurn = (validWordsList: string[], newLetterString: string[]): void => {
+    setDisableKeyboard(false);
+    validWordsList = getValidWords(validWordsList, newLetterString.join(''));
+    setCpuValidWordsList(validWordsList);
+    transitionToUserTurn();
   };
 
   const transitionToUserTurn = ():void => {
