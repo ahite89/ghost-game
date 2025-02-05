@@ -74,6 +74,10 @@ function App() {
     return letterString.map((letter) => letter.letter);
   }
 
+  const pauseGameplayThenCallback = async (callback: () => void, milliseconds: number): Promise<void> => {
+    await setTimeout(callback, milliseconds);
+  };
+
   const startNewRound = (): void => {
     const startingTwoLetters: LetterProps[] = getTwoRandomLetters(CPU_WORD_LIST);
     setLetterString([startingTwoLetters[0], startingTwoLetters[1]]);
@@ -93,12 +97,17 @@ function App() {
     await pauseGameplayThenCallback(gameWinnerCallback, 2000);
   };
 
+  const accumulatePoints = (): void => {
+    const pointsFromRound = letterString.reduce((acc, curr) => acc + curr.pointValue, pointsWon);
+    setPointsWon(pointsFromRound);
+  }
+
   const declareRoundWinner = async (message: string, winner: Player): Promise<void> => {
     setDisableKeyboard(false);
     setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 2000});
     const roundWinnerCallback = () => {
       transitionToUserTurn();
-      winner === Player.CPU ? setUserHP(userHP.slice(0, -1)) : setPointsWon(pointsWon + 1);         
+      winner === Player.CPU ? setUserHP(userHP.slice(0, -1)) : accumulatePoints();         
     };
     await pauseGameplayThenCallback(roundWinnerCallback, 2000);
   };
@@ -183,10 +192,6 @@ function App() {
         };
         await pauseGameplayThenCallback(invalidWordCallback, 2000);
       }
-  };
-
-  const pauseGameplayThenCallback = async (callback: () => void, milliseconds: number): Promise<void> => {
-    await setTimeout(callback, milliseconds);
   };
 
   const handleKeySelected = async (key: string): Promise<void> => {
