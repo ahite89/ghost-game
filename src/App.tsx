@@ -70,11 +70,15 @@ function App() {
     startNewRound();
   };
 
+  const getLettersFromLetterPropsArray = (letterString: LetterProps[]): string[] => {
+    return letterString.map((letter) => letter.letter);
+  }
+
   const startNewRound = (): void => {
     const startingTwoLetters: LetterProps[] = getTwoRandomLetters(CPU_WORD_LIST);
     setLetterString([startingTwoLetters[0], startingTwoLetters[1]]);
-    const allValidWords: string[] = getValidWords(allValidWordsFromDictionary, startingTwoLetters.join(''));
-    const cpuValidWords: string[] = getValidWords(CPU_WORD_LIST, startingTwoLetters.join(''));
+    const allValidWords: string[] = getValidWords(allValidWordsFromDictionary, getLettersFromLetterPropsArray(startingTwoLetters).join(''));
+    const cpuValidWords: string[] = getValidWords(CPU_WORD_LIST, getLettersFromLetterPropsArray(startingTwoLetters).join(''));
     setAllValidWordsList(allValidWords);
     setCpuValidWordsList(cpuValidWords);
   };
@@ -98,10 +102,6 @@ function App() {
     };
     await pauseGameplayThenCallback(roundWinnerCallback, 2000);
   };
-
-  const getLettersFromLetterPropsArray = (letterString: LetterProps[]): string[] => {
-    return letterString.map((letter) => letter.letter);
-  }
 
   const cpuGameplay = async (): Promise<void> => {
     debugger
