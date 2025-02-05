@@ -8,8 +8,9 @@ import { getValidWords, getRandomValidWord } from './services/words';
 
 import { FULL_HP_ARRAY } from './constants/hitPoints';
 import { Keys } from './constants/keyboard';
-import { Player, Winner } from './constants/player';
+import { Player } from './constants/player';
 import { CPU_WORD_LIST } from './constants/cpuWordList';
+import { letterToPointsMap } from './constants/letter';
 
 import LetterString from './components/LetterString';
 import Header from './components/Header';
@@ -43,7 +44,7 @@ function App() {
   const [roundsWon, setRoundsWon] = useState<number>(0);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [isLetterEntered, setIsLetterEntered] = useState<boolean>(false);
-  const [gameWinner, setGameWinner] = useState<Winner>(Winner.None);
+  const [gameWinner, setGameWinner] = useState<Player>(Player.None);
   const [cursorBlinking, setCursorBlinking] = useState<boolean>(true);
   const [snackbarState, setSnackbarState] = useState<SnackbarProps>(defaultSnackbarState);
 
@@ -53,7 +54,7 @@ function App() {
 
   useEffect(() => {
     if (userHP.length === 0) {
-      declareGameWinner(Winner.CPU);
+      declareGameWinner(Player.CPU);
     }
     else {
       startNewRound();
@@ -64,7 +65,7 @@ function App() {
     setUserHP(FULL_HP_ARRAY);
     setRoundsWon(0);
     setDisableKeyboard(false);
-    setGameWinner(Winner.None);
+    setGameWinner(Player.None);
     setGameOver(false);
     startNewRound();
   };
@@ -78,7 +79,7 @@ function App() {
     setCpuValidWordsList(cpuValidWords);
   };
 
-  const declareGameWinner = async (winner: Winner): Promise<void> => {
+  const declareGameWinner = async (winner: Player): Promise<void> => {
     setCursorBlinking(false);
     const gameWinnerCallback = () => {
       setGameWinner(winner);
@@ -88,12 +89,12 @@ function App() {
     await pauseGameplayThenCallback(gameWinnerCallback, 2000);
   };
 
-  const declareRoundWinner = async (message: string, winner: Winner): Promise<void> => {
+  const declareRoundWinner = async (message: string, winner: Player): Promise<void> => {
     setDisableKeyboard(false);
     setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 2000});
     const roundWinnerCallback = () => {
       transitionToUserTurn();
-      winner === Winner.CPU ? setUserHP(userHP.slice(0, -1)) : setRoundsWon(roundsWon + 1);         
+      winner === Player.CPU ? setUserHP(userHP.slice(0, -1)) : setRoundsWon(roundsWon + 1);         
     };
     await pauseGameplayThenCallback(roundWinnerCallback, 2000);
   };
@@ -115,7 +116,7 @@ function App() {
       nextValidCpuWord = getRandomValidWord(newValidCpuWords, getLettersFromLetterPropsArray(letterString));
 
       if (!nextValidCpuWord) {
-        await declareRoundWinner("Nice try!", Winner.CPU);
+        await declareRoundWinner("Nice try!", Player.CPU);
       }
       else {
         await handleValidCpuWord(newValidCpuWords, nextValidCpuWord);
@@ -128,7 +129,9 @@ function App() {
 
   const handleValidCpuWord = async (validWordsList: string[], nextValidWord: string): Promise<void> => {
     const nextLetter: string = nextValidWord[letterString.length];
-    const newLetterString: LetterProps[] = letterString.concat({ letter: nextLetter.toUpperCase(), pointValue: 0 , playedBy: Player.CPU });
+    const newLetterString: LetterProps[] = letterString.concat(
+      { letter: nextLetter.toUpperCase(), pointValue: letterToPointsMap[nextLetter.toUpperCase()] , playedBy: Player.CPU }
+    );
     setLetterString(newLetterString);
     nextValidWord = getRandomValidWord(validWordsList, getLettersFromLetterPropsArray(newLetterString));
     
@@ -138,7 +141,7 @@ function App() {
       nextValidWord = getRandomValidWord(validWordsList, getLettersFromLetterPropsArray(letterString));
       
       if (!nextValidWord) {
-        await declareRoundWinner("Well done!", Winner.User);
+        await declareRoundWinner("Well done!", Player.User);
       }
       else {
         handleFinishCpuTurn(validWordsList, newLetterString);
@@ -199,7 +202,9 @@ function App() {
     }
     else if (!isLetterEntered && key !== Keys.Delete && key !== Keys.Enter) {
       setCursorBlinking(false);
-      const newGuessString = letterString.concat({ letter: key, pointValue: 0, playedBy: Player.User });
+      const newGuessString = letterString.concat(
+        { letter: key, pointValue: letterToPointsMap[key], playedBy: Player.User }
+      );
       setLetterString(newGuessString);
       setIsLetterEntered(true);
     }
@@ -219,7 +224,7 @@ function App() {
           </Stack>
           <Stack sx={{ py: 3 }} alignItems="center">
             <MessageCenter message={message} />
-            {(disableKeyboard && gameWinner === Winner.None) &&
+            {(disableKeyboard && gameWinner === Player.None) &&
               <Loader />
             }
           </Stack>

@@ -4,6 +4,6 @@ import { Player } from "../constants/player";
 export interface LetterProps {
     letter: string,
     pointValue: number,
-    playedBy?: Player,
+    playedBy: Player,
     children?: ReactNode
 }

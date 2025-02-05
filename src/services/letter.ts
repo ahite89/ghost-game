@@ -1,8 +1,13 @@
 import { LetterProps } from "../interfaces/letter";
+import { letterToPointsMap } from "../constants/letter";
+import { Player } from "../constants/player";
 
 export const getTwoRandomLetters = (cpuWordList: string[]): LetterProps[] => {
     const startingWord: string = getRandomStartingWord(cpuWordList);
-    return [{ letter: startingWord[0].toUpperCase(), pointValue: 0 }, { letter: startingWord[1].toUpperCase(), pointValue: 0 }];
+    return [
+        { letter: startingWord[0].toUpperCase(), pointValue: letterToPointsMap[startingWord[0].toUpperCase()], playedBy: Player.None },
+        { letter: startingWord[1].toUpperCase(), pointValue: letterToPointsMap[startingWord[0].toUpperCase()], playedBy: Player.None }
+    ];
 };
 
 const getRandomStartingWord = (wordList: string[]): string => {
