@@ -1,3 +1,3 @@
 export interface ScoreProps {
-    roundsWon: number
+    pointsWon: number
 }

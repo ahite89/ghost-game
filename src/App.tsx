@@ -41,7 +41,7 @@ function App() {
   const [cpuValidWordsList, setCpuValidWordsList] = useState<string[]>(['']);
   const [allValidWordsList, setAllValidWordsList] = useState<string[]>(['']);
   const [disableKeyboard, setDisableKeyboard] = useState<boolean>(false);
-  const [roundsWon, setRoundsWon] = useState<number>(0);
+  const [pointsWon, setPointsWon] = useState<number>(0);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [isLetterEntered, setIsLetterEntered] = useState<boolean>(false);
   const [gameWinner, setGameWinner] = useState<Player>(Player.None);
@@ -59,11 +59,11 @@ function App() {
     else {
       startNewRound();
     }
-  }, [userHP, roundsWon]);
+  }, [userHP]);
 
   const startNewGame = (): void => {
     setUserHP(FULL_HP_ARRAY);
-    setRoundsWon(0);
+    setPointsWon(0);
     setDisableKeyboard(false);
     setGameWinner(Player.None);
     setGameOver(false);
@@ -94,7 +94,7 @@ function App() {
     setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 2000});
     const roundWinnerCallback = () => {
       transitionToUserTurn();
-      winner === Player.CPU ? setUserHP(userHP.slice(0, -1)) : setRoundsWon(roundsWon + 1);         
+      winner === Player.CPU ? setUserHP(userHP.slice(0, -1)) : setPointsWon(pointsWon + 1);         
     };
     await pauseGameplayThenCallback(roundWinnerCallback, 2000);
   };
@@ -219,7 +219,7 @@ function App() {
       {!gameOver &&
         <>
           <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
-            <Score roundsWon={roundsWon} />
+            <Score pointsWon={pointsWon} />
             <HitPoints currentHP={userHP} />
           </Stack>
           <Stack sx={{ py: 3 }} alignItems="center">
@@ -236,7 +236,7 @@ function App() {
         </>
       }
       {gameOver &&
-        <NewGame onClick={startNewGame} message='Play again?' roundsWon={roundsWon} />
+        <NewGame onClick={startNewGame} message='Play again?' pointsWon={pointsWon} />
       }
       <Snackbar 
         showSnackbar={snackbarState.showSnackbar} 
