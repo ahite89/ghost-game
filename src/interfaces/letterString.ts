@@ -1,4 +1,6 @@
+import { LetterProps } from "./letter";
+
 export interface LetterStringProps {
-    letters: string[],
+    letters: LetterProps[],
     cursorBlinking: boolean
 }

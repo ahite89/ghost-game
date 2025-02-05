@@ -8,7 +8,7 @@ import { getValidWords, getRandomValidWord } from './services/words';
 
 import { FULL_HP_ARRAY } from './constants/hitPoints';
 import { Keys } from './constants/keyboard';
-import { Winner } from './constants/player';
+import { Player, Winner } from './constants/player';
 import { CPU_WORD_LIST } from './constants/cpuWordList';
 
 import LetterString from './components/LetterString';
@@ -23,6 +23,7 @@ import Snackbar from './components/Snackbar';
 
 import { HitPointProps } from './interfaces/hitPoint';
 import { SnackbarProps } from './interfaces/snackbar';
+import { LetterProps } from './interfaces/letter';
 
 function App() {
 
@@ -35,7 +36,7 @@ function App() {
 
   const [userHP, setUserHP] = useState<HitPointProps[]>(FULL_HP_ARRAY);
   const [message, setMessage] = useState<string>('');
-  const [letterString, setLetterString] = useState<string[]>([]);
+  const [letterString, setLetterString] = useState<LetterProps[]>([]);
   const [cpuValidWordsList, setCpuValidWordsList] = useState<string[]>(['']);
   const [allValidWordsList, setAllValidWordsList] = useState<string[]>(['']);
   const [disableKeyboard, setDisableKeyboard] = useState<boolean>(false);
@@ -69,7 +70,7 @@ function App() {
   };
 
   const startNewRound = (): void => {
-    const startingTwoLetters: string[] = getTwoRandomLetters(CPU_WORD_LIST);
+    const startingTwoLetters: LetterProps[] = getTwoRandomLetters(CPU_WORD_LIST);
     setLetterString([startingTwoLetters[0], startingTwoLetters[1]]);
     const allValidWords: string[] = getValidWords(allValidWordsFromDictionary, startingTwoLetters.join(''));
     const cpuValidWords: string[] = getValidWords(CPU_WORD_LIST, startingTwoLetters.join(''));
@@ -97,17 +98,21 @@ function App() {
     await pauseGameplayThenCallback(roundWinnerCallback, 2000);
   };
 
+  const getLettersFromLetterPropsArray = (letterString: LetterProps[]): string[] => {
+    return letterString.map((letter) => letter.letter);
+  }
+
   const cpuGameplay = async (): Promise<void> => {
     debugger
     setCursorBlinking(false);
     let nextValidCpuWord: string, newValidCpuWords: string[];
-    newValidCpuWords = getValidWords(cpuValidWordsList, letterString.join('')); 
-    nextValidCpuWord = getRandomValidWord(newValidCpuWords, letterString);  
+    newValidCpuWords = getValidWords(cpuValidWordsList, getLettersFromLetterPropsArray(letterString).join('')); 
+    nextValidCpuWord = getRandomValidWord(newValidCpuWords, getLettersFromLetterPropsArray(letterString));  
     
     if (!nextValidCpuWord) {
       // then look into the all valid words list
-      newValidCpuWords = getValidWords(allValidWordsList, letterString.join(''));
-      nextValidCpuWord = getRandomValidWord(newValidCpuWords, letterString);
+      newValidCpuWords = getValidWords(allValidWordsList, getLettersFromLetterPropsArray(letterString).join(''));
+      nextValidCpuWord = getRandomValidWord(newValidCpuWords, getLettersFromLetterPropsArray(letterString));
 
       if (!nextValidCpuWord) {
         await declareRoundWinner("Nice try!", Winner.CPU);
@@ -123,14 +128,14 @@ function App() {
 
   const handleValidCpuWord = async (validWordsList: string[], nextValidWord: string): Promise<void> => {
     const nextLetter: string = nextValidWord[letterString.length];
-    const newLetterString: string[] = letterString.concat(nextLetter.toUpperCase());  
+    const newLetterString: LetterProps[] = letterString.concat({ letter: nextLetter.toUpperCase(), pointValue: 0 , playedBy: Player.CPU });
     setLetterString(newLetterString);
-    nextValidWord = getRandomValidWord(validWordsList, newLetterString);
+    nextValidWord = getRandomValidWord(validWordsList, getLettersFromLetterPropsArray(newLetterString));
     
     if (!nextValidWord) {
       // then look into the all valid words list
-      validWordsList = getValidWords(allValidWordsList, letterString.join(''));
-      nextValidWord = getRandomValidWord(validWordsList, letterString);
+      validWordsList = getValidWords(allValidWordsList, getLettersFromLetterPropsArray(letterString).join(''));
+      nextValidWord = getRandomValidWord(validWordsList, getLettersFromLetterPropsArray(letterString));
       
       if (!nextValidWord) {
         await declareRoundWinner("Well done!", Winner.User);
@@ -144,9 +149,9 @@ function App() {
     }
   }
 
-  const handleFinishCpuTurn = (validWordsList: string[], newLetterString: string[]): void => {
+  const handleFinishCpuTurn = (validWordsList: string[], newLetterString: LetterProps[]): void => {
     setDisableKeyboard(false);
-    validWordsList = getValidWords(validWordsList, newLetterString.join(''));
+    validWordsList = getValidWords(validWordsList, getLettersFromLetterPropsArray(newLetterString).join(''));
     setCpuValidWordsList(validWordsList);
     transitionToUserTurn();
   };
@@ -157,7 +162,7 @@ function App() {
   };
 
   const checkWordValidity = async (): Promise<void> => {
-    const newValidWords: string[] = getValidWords(allValidWordsList, letterString.join(''));
+    const newValidWords: string[] = getValidWords(allValidWordsList, getLettersFromLetterPropsArray(letterString).join(''));
       if (newValidWords.length) {
         setDisableKeyboard(true);
         const validWordCallback = () => {
@@ -194,7 +199,7 @@ function App() {
     }
     else if (!isLetterEntered && key !== Keys.Delete && key !== Keys.Enter) {
       setCursorBlinking(false);
-      const newGuessString = letterString.concat(key);
+      const newGuessString = letterString.concat({ letter: key, pointValue: 0, playedBy: Player.User });
       setLetterString(newGuessString);
       setIsLetterEntered(true);
     }

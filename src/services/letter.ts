@@ -1,6 +1,8 @@
-export const getTwoRandomLetters = (cpuWordList: string[]): string[] => {
+import { LetterProps } from "../interfaces/letter";
+
+export const getTwoRandomLetters = (cpuWordList: string[]): LetterProps[] => {
     const startingWord: string = getRandomStartingWord(cpuWordList);
-    return [startingWord[0].toUpperCase(), startingWord[1].toUpperCase()];
+    return [{ letter: startingWord[0].toUpperCase(), pointValue: 0 }, { letter: startingWord[1].toUpperCase(), pointValue: 0 }];
 };
 
 const getRandomStartingWord = (wordList: string[]): string => {
