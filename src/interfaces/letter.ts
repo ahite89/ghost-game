@@ -5,5 +5,4 @@ export interface LetterProps {
     letter: string,
     pointValue: number,
     playedBy: Player,
-    children?: ReactNode
 }

@@ -59,7 +59,7 @@ function App() {
     else {
       startNewRound();
     }
-  }, [userHP]);
+  }, [userHP, pointsWon]);
 
   const startNewGame = (): void => {
     setUserHP(FULL_HP_ARRAY);
@@ -79,12 +79,14 @@ function App() {
   };
 
   const startNewRound = (): void => {
+    setLetterString([]);
     const startingTwoLetters: LetterProps[] = getTwoRandomLetters(CPU_WORD_LIST);
     setLetterString([startingTwoLetters[0], startingTwoLetters[1]]);
     const allValidWords: string[] = getValidWords(allValidWordsFromDictionary, getLettersFromLetterPropsArray(startingTwoLetters).join(''));
     const cpuValidWords: string[] = getValidWords(CPU_WORD_LIST, getLettersFromLetterPropsArray(startingTwoLetters).join(''));
     setAllValidWordsList(allValidWords);
     setCpuValidWordsList(cpuValidWords);
+    setCursorBlinking(true);
   };
 
   const declareGameWinner = async (winner: Player): Promise<void> => {
@@ -146,8 +148,8 @@ function App() {
     
     if (!nextValidWord) {
       // then look into the all valid words list
-      validWordsList = getValidWords(allValidWordsList, getLettersFromLetterPropsArray(letterString).join(''));
-      nextValidWord = getRandomValidWord(validWordsList, getLettersFromLetterPropsArray(letterString));
+      validWordsList = getValidWords(allValidWordsList, getLettersFromLetterPropsArray(newLetterString).join(''));
+      nextValidWord = getRandomValidWord(validWordsList, getLettersFromLetterPropsArray(newLetterString));
       
       if (!nextValidWord) {
         await declareRoundWinner("Well done!", Player.User);

@@ -4,19 +4,17 @@ import Letter from "./Letter";
 
 export default function LetterString({letters, cursorBlinking}: LetterStringProps) {
 
-    const renderedLetters = letters.map(letter => {
+    const renderedLetters = letters.map((letter, index) => {
         return (
-            <Letter key={letter.letter} playedBy={letter.playedBy} letter={letter.letter} pointValue={letter.pointValue}>
-                {letter.letter}
-            </Letter>
+            <Letter key={index} playedBy={letter.playedBy} letter={letter.letter} pointValue={letter.pointValue}></Letter>
         );
     });
 
     return (
         <Stack direction="row">
-            <Box sx={{paddingRight: ".5rem"}} className="letterString">
+            <Stack sx={{paddingRight: ".5rem"}} className="letterString" direction="row">
                 {renderedLetters}
-            </Box>
+            </Stack>
             {cursorBlinking &&
                 <Typography className="blinkingCursor" variant="h2"></Typography>
             }
