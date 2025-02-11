@@ -3,10 +3,13 @@ export const getValidWords = (wordList: string[], letters: string): string[] => 
 };
 
 export const getRandomValidWord = (validWords: string[], letterString: string[]): string => {
-    let longerWords = validWords.filter(word => word.length > letterString.length);
+    // Is there another word in the array beside this word that starts with the same letters?
+    debugger
+
+    validWords = validWords.filter(word => word.toUpperCase() !== letterString.join(""));
+    //let longerWords = validWords.filter(word => word.length > letterString.length);
     
-    // This isn't working
-    let validLongerWords = longerWords.filter(longWord => !longWord.includes(letterString.join("")));
+    let validLongerWords = validWords.filter(word => word.toUpperCase().includes(letterString.join("")));
     let randomIndex = Math.floor(Math.random() * validLongerWords.length);
     return validLongerWords[randomIndex];
 };

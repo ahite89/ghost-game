@@ -21,6 +21,7 @@ import Loader from './components/Loader';
 import NewGame from './components/NewGame';
 import Score from './components/Score';
 import Snackbar from './components/Snackbar';
+import Hint from './components/Hint';
 
 import { HitPointProps } from './interfaces/hitPoint';
 import { SnackbarProps } from './interfaces/snackbar';
@@ -28,6 +29,7 @@ import { LetterProps } from './interfaces/letter';
 
 function App() {
 
+  // Move to constants file
   const defaultSnackbarState: SnackbarProps = { 
     showSnackbar: false,
     message: '',
@@ -47,6 +49,7 @@ function App() {
   const [gameWinner, setGameWinner] = useState<Player>(Player.None);
   const [cursorBlinking, setCursorBlinking] = useState<boolean>(true);
   const [snackbarState, setSnackbarState] = useState<SnackbarProps>(defaultSnackbarState);
+  const [hintCount, setHintCount] = useState<number>(100);
 
   const handleCloseSnackbar = () => {
     setSnackbarState({...snackbarState, showSnackbar: false});
@@ -64,6 +67,7 @@ function App() {
   const startNewGame = (): void => {
     setUserHP(FULL_HP_ARRAY);
     setPointsWon(0);
+    setHintCount(100);
     setDisableKeyboard(false);
     setGameWinner(Player.None);
     setGameOver(false);
@@ -81,7 +85,7 @@ function App() {
   const startNewRound = (): void => {
     setLetterString([]);
     const startingTwoLetters: LetterProps[] = getTwoRandomLetters(CPU_WORD_LIST);
-    setLetterString([startingTwoLetters[0], startingTwoLetters[1]]);
+    setLetterString(startingTwoLetters);
     const allValidWords: string[] = getValidWords(allValidWordsFromDictionary, getLettersFromLetterPropsArray(startingTwoLetters).join(''));
     const cpuValidWords: string[] = getValidWords(CPU_WORD_LIST, getLettersFromLetterPropsArray(startingTwoLetters).join(''));
     setAllValidWordsList(allValidWords);
@@ -115,7 +119,7 @@ function App() {
   };
 
   const cpuGameplay = async (): Promise<void> => {
-    debugger
+    //debugger
     setCursorBlinking(false);
     let nextValidCpuWord: string, newValidCpuWords: string[];
     newValidCpuWords = getValidWords(cpuValidWordsList, getLettersFromLetterPropsArray(letterString).join('')); 
@@ -217,6 +221,29 @@ function App() {
     }
   };
 
+  const handleHintButtonClick = (): void => {
+    if (hintCount > 0 && !isLetterEntered) {
+      setCursorBlinking(false);
+      debugger  
+      const validWordsList: string[] = getValidWords(allValidWordsList, getLettersFromLetterPropsArray(letterString).join(''));
+      const nextValidWord: string = getRandomValidWord(validWordsList, getLettersFromLetterPropsArray(letterString));
+      if (!nextValidWord) {
+        setSnackbarState({...snackbarState, showSnackbar: true, message: "No hints available", displayDuration: 2000});
+        setCursorBlinking(true);
+      }
+      else {
+        const hintLetter: string = nextValidWord[letterString.length].toUpperCase();
+        const newGuessString = letterString.concat(
+          { letter: hintLetter, pointValue: letterToPointsMap[hintLetter], playedBy: Player.User }
+        );
+        
+        setLetterString(newGuessString);
+        setIsLetterEntered(true);
+        setHintCount(hintCount - 1);
+      }
+    }
+  };
+
   return (
     <Container maxWidth="sm" sx={{padding: "2rem", backgroundColor: "white"}}>
       <Stack alignItems="center">
@@ -228,6 +255,7 @@ function App() {
           <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
             <Score pointsWon={pointsWon} />
             <HitPoints currentHP={userHP} />
+            <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
           </Stack>
           <Stack sx={{ py: 3 }} alignItems="center">
             <MessageCenter message={message} />

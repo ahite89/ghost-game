@@ -13,7 +13,7 @@ export default function HitPoints({currentHP}: HitPointsProps) {
     });
 
     return (
-        <div className="flex flex-row">
+        <div style={{display: "flex", justifyContent: "center"}}>
             {renderedHitPoints}
         </div>
     );
