@@ -8,12 +8,13 @@ export default function Key({ keyName, children, disableKeyboard, onClick }: Key
         onClick(keyName);
     };
 
-    const actionKeyClass = keyName === (Keys.Enter || Keys.Delete) ? "actionKey" : "";
-    children = keyName === Keys.Delete ? <FaDeleteLeft /> : children;
+    const actionKeyID = keyName === Keys.Enter || keyName === Keys.Delete ? "actionKey" : "";
+    children = keyName === Keys.Delete ? <FaDeleteLeft size={22} /> : children;
     
     return (
         <button
-            className={"key " + actionKeyClass}
+            id={actionKeyID}
+            className={"key"}
             onClick={handleKeyClick} 
             disabled={disableKeyboard}
         >

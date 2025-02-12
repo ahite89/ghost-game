@@ -5,12 +5,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: aliceblue;
+  background-color: slategray;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.MuiContainer-root {
+  background-color: aliceblue !important;
 }
 
 .loader {
@@ -56,9 +60,9 @@ code {
   touch-action: manipulation;
 }
 
-.keyboard .actionKey {
+.keyboard #actionKey {
   flex: 1.5 !important;
-  font-size: 12px !important;
+  font-size: .75rem !important;
 }
 
 .key {

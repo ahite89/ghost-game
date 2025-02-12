@@ -1,5 +1,5 @@
 import { LetterStringProps } from "../interfaces/letterString";
-import { Box, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import Letter from "./Letter";
 
 export default function LetterString({letters, cursorBlinking}: LetterStringProps) {

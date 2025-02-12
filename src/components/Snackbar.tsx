@@ -13,8 +13,11 @@ export default function Snackbar({showSnackbar, displayDuration, message, closeS
             autoHideDuration={displayDuration}
             onClose={closeSnackbar}
             message={message}
+            ContentProps={{sx: {backgroundColor: "rgb(218, 218, 218)", color: "black"}}}
             key={vertical + horizontal}
-            sx={{"&.MuiSnackbar-root": { top: "250px" }}}
+            sx={{
+              "&.MuiSnackbar-root": { top: "13rem" }
+            }}
           />
         </Box>
       );
