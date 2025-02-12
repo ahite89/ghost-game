@@ -6,7 +6,12 @@ export default function LetterString({letters, cursorBlinking}: LetterStringProp
 
     const renderedLetters = letters.map((letter, index) => {
         return (
-            <Letter key={index} playedBy={letter.playedBy} letter={letter.letter} pointValue={letter.pointValue}></Letter>
+            <Letter 
+                key={index} 
+                color={letter.color} 
+                playedBy={letter.playedBy} 
+                letter={letter.letter} 
+                pointValue={letter.pointValue}></Letter>
         );
     });
 

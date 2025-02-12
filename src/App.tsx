@@ -257,7 +257,7 @@ function App() {
             <HitPoints currentHP={userHP} />
             <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
           </Stack>
-          <Stack sx={{ py: 3 }} alignItems="center">
+          <Stack sx={{ py: 4 }} alignItems="center">
             <MessageCenter message={message} />
             {(disableKeyboard && gameWinner === Player.None) &&
               <Loader />
