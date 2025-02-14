@@ -1,16 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Container, Stack, Divider } from '@mui/material';
 
 import allValidWordsFromDictionary from './api/dictionary';
 
 import { getTwoRandomLetters } from './services/letter';
 import { getValidWords, getRandomValidWord } from './services/words';
+import { getPointsFromRound } from './services/score';
 
 import { FULL_HP_ARRAY } from './constants/hitPoints';
 import { Keys } from './constants/keyboard';
 import { Player } from './constants/player';
 import { CPU_WORD_LIST } from './constants/cpuWordList';
 import { letterToPointsMap } from './constants/letter';
+import { INITIAL_HINT_COUNT, STARTING_POINT_VALUE, STARTING_HIGH_SCORE_VALUE } from './constants/game';
+import { DEFAULT_SNACKBAR_STATE } from './constants/snackbar';
 
 import LetterString from './components/LetterString';
 import Header from './components/Header';
@@ -29,13 +32,7 @@ import { LetterProps } from './interfaces/letter';
 
 function App() {
 
-  // Move to constants file
-  const defaultSnackbarState: SnackbarProps = { 
-    showSnackbar: false,
-    message: '',
-    displayDuration: 0,
-    closeSnackbar: () => {}
-  };
+  const highScore = useRef<number>(localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')!) : STARTING_HIGH_SCORE_VALUE);
 
   const [userHP, setUserHP] = useState<HitPointProps[]>(FULL_HP_ARRAY);
   const [message, setMessage] = useState<string>('');
@@ -43,13 +40,13 @@ function App() {
   const [cpuValidWordsList, setCpuValidWordsList] = useState<string[]>(['']);
   const [allValidWordsList, setAllValidWordsList] = useState<string[]>(['']);
   const [disableKeyboard, setDisableKeyboard] = useState<boolean>(false);
-  const [pointsWon, setPointsWon] = useState<number>(0);
+  const [pointsWon, setPointsWon] = useState<number>(STARTING_POINT_VALUE);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [isLetterEntered, setIsLetterEntered] = useState<boolean>(false);
   const [gameWinner, setGameWinner] = useState<Player>(Player.None);
   const [cursorBlinking, setCursorBlinking] = useState<boolean>(true);
-  const [snackbarState, setSnackbarState] = useState<SnackbarProps>(defaultSnackbarState);
-  const [hintCount, setHintCount] = useState<number>(100);
+  const [snackbarState, setSnackbarState] = useState<SnackbarProps>(DEFAULT_SNACKBAR_STATE);
+  const [hintCount, setHintCount] = useState<number>(INITIAL_HINT_COUNT);
 
   const handleCloseSnackbar = () => {
     setSnackbarState({...snackbarState, showSnackbar: false});
@@ -99,13 +96,32 @@ function App() {
       setGameWinner(winner);
       setDisableKeyboard(true);
       setGameOver(true);
+      setHighScore();
     };
     await pauseGameplayThenCallback(gameWinnerCallback, 2000);
   };
 
   const accumulatePoints = (): void => {
-    const pointsFromRound = letterString.reduce((acc, curr) => acc + curr.pointValue, pointsWon);
+    const pointsFromRound = getPointsFromRound(letterString, pointsWon);
     setPointsWon(pointsFromRound);
+  }
+
+  const setHighScore = (): void => {
+    const currentHighScore = localStorage.getItem('highScore');
+    if (currentHighScore) {
+      if (pointsWon > parseInt(currentHighScore)) {
+        localStorage.setItem('highScore', pointsWon.toString());
+        highScore.current = pointsWon;
+      }
+    }
+    else {
+      localStorage.setItem('highScore', pointsWon.toString());
+      highScore.current = pointsWon;
+    }
+    //const pointsFromRound = getPointsFromRound(letterString, pointsWon);
+    // if (pointsWon > highScore.current) {
+    //   highScore.current = pointsWon;
+    // }
   }
 
   const declareRoundWinner = async (message: string, winner: Player): Promise<void> => {
@@ -271,7 +287,7 @@ function App() {
         </>
       }
       {gameOver &&
-        <NewGame onClick={startNewGame} message='Play again?' pointsWon={pointsWon} />
+        <NewGame onClick={startNewGame} message='Play again?' pointsWon={pointsWon} highScore={highScore.current} />
       }
       <Snackbar 
         showSnackbar={snackbarState.showSnackbar} 
