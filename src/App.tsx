@@ -265,40 +265,38 @@ function App() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{padding: "2rem", backgroundColor: "white"}}>
-      <Stack alignItems="center">
-        <Header />
-      </Stack>
-      <Divider sx={{ py: 2}} flexItem />
-      {!gameOver &&
-        <>
-          <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
-            <Score pointsWon={pointsWon} />
-            <HitPoints currentHP={userHP} />
-            <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
-          </Stack>
-          <Stack sx={{ py: 4 }} alignItems="center">
-            <MessageCenter message={message} />
-            {(disableKeyboard && gameWinner === Player.None) &&
-              <Loader />
-            }
-          </Stack>
-          <Stack sx={{ py: 3 }} alignItems="center">
-            {/* {allValidWordsList.length} words remaining */}
-            <LetterString letters={letterString} cursorBlinking={cursorBlinking} animating={animatePoints} />
-          </Stack>
-          <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected} />
-        </>
-      }
-      {gameOver &&
-        <NewGame onClick={startNewGame} message='Play again?' pointsWon={pointsWon} highScore={highScore.current} />
-      }
-      <Snackbar 
-        showSnackbar={snackbarState.showSnackbar} 
-        message={snackbarState.message}
-        displayDuration={snackbarState.displayDuration} 
-        closeSnackbar={handleCloseSnackbar} />
-    </Container>
+    <>
+      <Header />
+      <Container maxWidth="sm" sx={{padding: "0 2rem 2rem 2rem", backgroundColor: "white"}}>
+        {!gameOver &&
+          <>
+            <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
+              <Score pointsWon={pointsWon} />
+              <HitPoints currentHP={userHP} />
+              <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
+            </Stack>
+            <Stack sx={{ py: 4 }} alignItems="center">
+              <MessageCenter message={message} />
+              {(disableKeyboard && gameWinner === Player.None) &&
+                <Loader />
+              }
+            </Stack>
+            <Stack sx={{ py: 3 }} alignItems="center">
+              <LetterString letters={letterString} cursorBlinking={cursorBlinking} animating={animatePoints} />
+            </Stack>
+            <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected} />
+          </>
+        }
+        {gameOver &&
+          <NewGame onClick={startNewGame} message='Play again?' pointsWon={pointsWon} highScore={highScore.current} />
+        }
+        <Snackbar 
+          showSnackbar={snackbarState.showSnackbar} 
+          message={snackbarState.message}
+          displayDuration={snackbarState.displayDuration} 
+          closeSnackbar={handleCloseSnackbar} />
+      </Container>
+    </>
   );
 }
 
