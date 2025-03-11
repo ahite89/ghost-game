@@ -7,13 +7,11 @@ export const getTwoRandomLetters = (cpuWordList: string[]): LetterProps[] => {
     return [
         { 
             letter: startingWord[0].toUpperCase(),
-            color: "#d32f2f",
             pointValue: letterToPointsMap[startingWord[0].toUpperCase()],
             playedBy: Player.None
         },
         { 
             letter: startingWord[1].toUpperCase(),
-            color: "#d32f2f",
             pointValue: letterToPointsMap[startingWord[1].toUpperCase()],
             playedBy: Player.None
         }
@@ -23,4 +21,8 @@ export const getTwoRandomLetters = (cpuWordList: string[]): LetterProps[] => {
 const getRandomStartingWord = (wordList: string[]): string => {
     let randomIndex = Math.floor(Math.random() * wordList.length);
     return wordList[randomIndex];
+}
+
+export const getLettersFromLetterPropsArray = (letterString: LetterProps[]): string[] => {
+    return letterString.map((letter) => letter.letter);
 }

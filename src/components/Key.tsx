@@ -2,14 +2,14 @@ import { Keys } from "../constants/keyboard";
 import { KeyProps } from "../interfaces/key";
 import { FaDeleteLeft } from "react-icons/fa6";
 
-export default function Key({ keyName, children, disableKeyboard, onClick }: KeyProps) {
+export default function Key({ keyName, disableKeyboard, onClick }: KeyProps) {
 
     const handleKeyClick = () => {
         onClick(keyName);
     };
 
     const actionKeyID = keyName === Keys.Enter || keyName === Keys.Delete ? "actionKey" : "";
-    children = keyName === Keys.Delete ? <FaDeleteLeft size={22} /> : children;
+    let keyDisplay = keyName === Keys.Delete ? <FaDeleteLeft size={22} /> : keyName;
     
     return (
         <button
@@ -18,7 +18,7 @@ export default function Key({ keyName, children, disableKeyboard, onClick }: Key
             onClick={handleKeyClick} 
             disabled={disableKeyboard}
         >
-            {children}
+            {keyDisplay}
         </button>
     );
 }

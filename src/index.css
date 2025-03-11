@@ -17,6 +17,10 @@ code {
   background-color: aliceblue !important;
 }
 
+.MuiSnackbarContent-root {
+  justify-content: center !important;
+}
+
 .loader {
   width: 30px;
   aspect-ratio: 2;
@@ -29,6 +33,7 @@ code {
   animation: l3 1s infinite linear;
   position: absolute;
 }
+
 @keyframes l3 {
     20%{background-position:0%   0%, 50%  50%,100%  50%}
     40%{background-position:0% 100%, 50%   0%,100%  50%}
@@ -42,6 +47,7 @@ code {
   height: 2.7rem;
   background: black;
   display: inline-block;
+  animation: cursor-blink 1.2s steps(2) infinite;
 }
 
 @keyframes cursor-blink {
@@ -50,18 +56,29 @@ code {
   }
 }
 
-.blinkingCursor::after {
-  animation: cursor-blink 1.2s steps(2) infinite;
+.letterContainer {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  width: 100%;
 }
 
-.keyboard {
+.keyBoardContainer {
+  height: 200px;
+  margin: 0 8px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.keyboardRow {
   display: flex;
   width: 100%;
   margin: 0 auto 8px;
   touch-action: manipulation;
 }
 
-.keyboard #actionKey {
+.keyboardRow #actionKey {
   flex: 1.5 !important;
   font-size: .75rem !important;
 }
@@ -78,7 +95,7 @@ code {
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-    background-color: rgb(218, 218, 218);
+    background-color: #d3d6da;
     color: black;
     flex: 1;
     display: flex;

@@ -7,23 +7,21 @@ export default function Keyboard({handleKeySelected, disableKeyboard}: KeyboardP
 
     const renderedKeys = keyboardOptions.map((keyboardRow, rowIndex) => {
         return (
-            <div className="keyboard" key={rowIndex}>
+            <div className="keyboardRow" key={rowIndex}>
                 {keyboardRow.map((key, keyIndex) => 
                     <Key 
                         onClick={handleKeySelected} 
                         key={keyIndex}
                         keyName={key}
                         disableKeyboard={disableKeyboard}
-                    >
-                        {key === Keys.Delete ? "X" : key}
-                    </Key>
+                    />
                 )}
             </div>  
         );
     });
 
     return (
-        <Stack flexWrap="nowrap" alignItems="center">
+        <Stack className="keyboardContainer" flexWrap="nowrap" alignItems="center">
            {renderedKeys}
         </Stack>
     );

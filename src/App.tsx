@@ -3,7 +3,7 @@ import { Container, Stack, Divider } from '@mui/material';
 
 import allValidWordsFromDictionary from './api/dictionary';
 
-import { getTwoRandomLetters } from './services/letter';
+import { getTwoRandomLetters, getLettersFromLetterPropsArray } from './services/letter';
 import { getValidWords, getRandomValidWord } from './services/words';
 import { getPointsFromRound } from './services/score';
 
@@ -47,40 +47,39 @@ function App() {
   const [cursorBlinking, setCursorBlinking] = useState<boolean>(true);
   const [snackbarState, setSnackbarState] = useState<SnackbarProps>(DEFAULT_SNACKBAR_STATE);
   const [hintCount, setHintCount] = useState<number>(INITIAL_HINT_COUNT);
+  const [animatePoints, setAnimatePoints] = useState<boolean>(false);
 
   const handleCloseSnackbar = () => {
     setSnackbarState({...snackbarState, showSnackbar: false});
   };
 
   useEffect(() => {
+    startNewGame();
+  }, []);
+
+  useEffect(() => {
     if (userHP.length === 0) {
       declareGameWinner(Player.CPU);
     }
-    else {
-      startNewRound();
-    }
-  }, [userHP, pointsWon]);
+  }, [userHP]);
 
-  const startNewGame = (): void => {
+  const startNewGame = async (): Promise<void> => {
     setUserHP(FULL_HP_ARRAY);
-    setPointsWon(0);
-    setHintCount(100);
+    setPointsWon(STARTING_POINT_VALUE);
+    setHintCount(INITIAL_HINT_COUNT);
     setDisableKeyboard(false);
     setGameWinner(Player.None);
     setGameOver(false);
-    startNewRound();
+    await startNewRound();
   };
-
-  const getLettersFromLetterPropsArray = (letterString: LetterProps[]): string[] => {
-    return letterString.map((letter) => letter.letter);
-  }
 
   const pauseGameplayThenCallback = async (callback: () => void, milliseconds: number): Promise<void> => {
     await setTimeout(callback, milliseconds);
   };
 
-  const startNewRound = (): void => {
+  const startNewRound = async (): Promise<void> => {
     setLetterString([]);
+    setAnimatePoints(false);
     const startingTwoLetters: LetterProps[] = getTwoRandomLetters(CPU_WORD_LIST);
     setLetterString(startingTwoLetters);
     const allValidWords: string[] = getValidWords(allValidWordsFromDictionary, getLettersFromLetterPropsArray(startingTwoLetters).join(''));
@@ -101,7 +100,7 @@ function App() {
     await pauseGameplayThenCallback(gameWinnerCallback, 2000);
   };
 
-  const accumulatePoints = (): void => {
+  const accumulatePoints = async (): Promise<void> => {
     const pointsFromRound = getPointsFromRound(letterString, pointsWon);
     setPointsWon(pointsFromRound);
   }
@@ -118,20 +117,26 @@ function App() {
       localStorage.setItem('highScore', pointsWon.toString());
       highScore.current = pointsWon;
     }
-    //const pointsFromRound = getPointsFromRound(letterString, pointsWon);
-    // if (pointsWon > highScore.current) {
-    //   highScore.current = pointsWon;
-    // }
+  }
+
+  const animatePointsAtRoundEnd = async (): Promise<void> => {
+    setAnimatePoints(true);
   }
 
   const declareRoundWinner = async (message: string, winner: Player): Promise<void> => {
     setDisableKeyboard(false);
-    setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 2000});
-    const roundWinnerCallback = () => {
-      transitionToUserTurn();
-      winner === Player.CPU ? setUserHP(userHP.slice(0, -1)) : accumulatePoints();         
-    };
-    await pauseGameplayThenCallback(roundWinnerCallback, 2000);
+    setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 1500});
+    if (winner === Player.User) {
+      debugger
+      const pointsAccumulationWaitTime = letterString.length * 1000;
+      await pauseGameplayThenCallback(() => animatePointsAtRoundEnd(), 1000);
+      await pauseGameplayThenCallback(() => accumulatePoints(), pointsAccumulationWaitTime);
+      await pauseGameplayThenCallback(() => startNewRound(), pointsAccumulationWaitTime);
+    }
+    else {
+      setUserHP(userHP.slice(0, -1));
+    }
+    transitionToUserTurn();  
   };
 
   const cpuGameplay = async (): Promise<void> => {
@@ -206,7 +211,7 @@ function App() {
         await pauseGameplayThenCallback(validWordCallback, 1000);
       }
       else {
-        setSnackbarState({...snackbarState, showSnackbar: true, message: "Not in word list", displayDuration: 2000});
+        setSnackbarState({...snackbarState, showSnackbar: true, message: "Not in word list", displayDuration: 1500});
         const invalidWordCallback = () => {
           setLetterString(letterString.slice(0, -1));
           setIsLetterEntered(false);
@@ -240,11 +245,10 @@ function App() {
   const handleHintButtonClick = (): void => {
     if (hintCount > 0 && !isLetterEntered) {
       setCursorBlinking(false);
-      debugger  
       const validWordsList: string[] = getValidWords(allValidWordsList, getLettersFromLetterPropsArray(letterString).join(''));
       const nextValidWord: string = getRandomValidWord(validWordsList, getLettersFromLetterPropsArray(letterString));
       if (!nextValidWord) {
-        setSnackbarState({...snackbarState, showSnackbar: true, message: "No hints available", displayDuration: 2000});
+        setSnackbarState({...snackbarState, showSnackbar: true, message: "No hints available", displayDuration: 1500});
         setCursorBlinking(true);
       }
       else {
@@ -280,8 +284,8 @@ function App() {
             }
           </Stack>
           <Stack sx={{ py: 3 }} alignItems="center">
-            <LetterString letters={letterString} cursorBlinking={cursorBlinking} />
-            {allValidWordsList.length} words remaining
+            {/* {allValidWordsList.length} words remaining */}
+            <LetterString letters={letterString} cursorBlinking={cursorBlinking} animating={animatePoints} />
           </Stack>
           <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected} />
         </>
