@@ -7,7 +7,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* background-color: slategray; */
+  background-color: #f5f5f5;
 }
 
 code {
@@ -15,9 +15,9 @@ code {
     monospace;
 }
 
-.MuiContainer-root {
+/* .MuiContainer-root {
   background-color: aliceblue !important;
-}
+} */
 
 .MuiSnackbarContent-root {
   justify-content: center !important;
