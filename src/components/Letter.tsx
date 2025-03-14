@@ -1,11 +1,11 @@
 import { Stack, Typography } from "@mui/material";
 import { LetterProps } from "../interfaces/letter";
 
-export default function Letter({letter}: LetterProps) {
+export default function Letter({letter, fontSize}: LetterProps) {
 
     return (
         <Stack>            
-            <Typography className="letter" variant="h2" fontWeight="400">
+            <Typography sx={{ fontSize: fontSize }} className="letter" fontWeight="400">
                 {letter}
             </Typography>
         </Stack>

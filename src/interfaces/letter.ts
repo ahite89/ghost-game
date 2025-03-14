@@ -6,4 +6,5 @@ export interface LetterProps {
     color?: string,
     pointValue: number,
     playedBy: Player,
+    fontSize?: string
 }
