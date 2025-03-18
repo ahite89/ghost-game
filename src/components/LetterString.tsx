@@ -28,9 +28,11 @@ export default function LetterString({letters, cursorBlinking, animating}: Lette
         if (animating) {
             setStartAnimating(true);
             setTimeout(() => {
-                setStartAnimating(false);
-                setPointsFromRound(getPointsFromRound(letters, 0));
-                setCombineScore(true);
+                setTimeout(() => {
+                    setPointsFromRound(getPointsFromRound(letters, 0));
+                    setCombineScore(true);
+                }, 2000);
+                setStartAnimating(false);       
             }, 1000);
         }
         setCombineScore(false);

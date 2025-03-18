@@ -260,38 +260,37 @@ function App() {
     <>
       <Header />
       <Container maxWidth="sm" sx={{padding: "0 2rem 2rem 2rem", backgroundColor: "white"}}>
-        {!gameOver &&
-          <>
-            <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
-              <Score pointsWon={pointsWon} letters={letterString} />
-              <HitPoints currentHP={userHP} />
-              <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
-            </Stack>
-            <Stack sx={{ py: 4 }} alignItems="center">
-              <MessageCenter message={message} />
-              {(disableKeyboard && gameWinner === Player.None) &&
-                <Loader />
-              }
-            </Stack>
-            <Stack sx={{ py: 3 }} alignItems="center">
-              <LetterString   
-                letters={letterString} 
-                cursorBlinking={cursorBlinking} 
-                animating={animatePoints}
-              />
-            </Stack>
-            <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected} />
-          </>
-        }
-        {gameOver &&
-          <NewGame onClick={startNewGame} message='Play again?' pointsWon={pointsWon} highScore={highScore.current} />
-        }
+        <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
+          <Score pointsWon={pointsWon} letters={letterString} />
+          <HitPoints currentHP={userHP} />
+          <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
+        </Stack>
+        <Stack sx={{ py: 4 }} alignItems="center">
+          <MessageCenter message={message} />
+          {(disableKeyboard && gameWinner === Player.None) &&
+            <Loader />
+          }
+        </Stack>
+        <Stack sx={{ py: 3 }} alignItems="center">
+          <LetterString   
+            letters={letterString} 
+            cursorBlinking={cursorBlinking} 
+            animating={animatePoints}
+          />
+        </Stack>
+        <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected} />         
         <Snackbar 
           showSnackbar={snackbarState.showSnackbar} 
           message={snackbarState.message}
           displayDuration={snackbarState.displayDuration} 
           closeSnackbar={handleCloseSnackbar} />
       </Container>
+      <NewGame 
+        onClick={startNewGame} 
+        message='Play again?' 
+        pointsWon={pointsWon} 
+        highScore={highScore.current}
+        openModal={gameOver} />
     </>
   );
 }

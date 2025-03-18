@@ -5,5 +5,6 @@ export interface NewGameProps {
     message: string,
     pointsWon: number,
     highScore: number,
-    [x: string]: any
+    [x: string]: any,
+    openModal: boolean
 }
