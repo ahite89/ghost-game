@@ -23,9 +23,21 @@ code {
   justify-content: center !important;
 }
 
+.start-screen-title {
+  font-family: 'Spectral', serif !important;
+  text-transform: lowercase;
+}
+
+.play-button {
+  padding: 5px 40px 5px 40px !important;
+  color: white !important;
+  background-color: black !important;
+  text-transform: capitalize !important;
+  border-radius: 2.5rem !important;
+}
+
 .ghost-title {
-  font-size: 3rem;
-  font-family: 'Spectral', serif;
+  font-family: 'Spectral', serif !important;
   color: #cccccc;
   text-transform: lowercase;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);

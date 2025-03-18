@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Container, Stack, Divider } from '@mui/material';
+import { Container, Stack } from '@mui/material';
 
 import allValidWordsFromDictionary from './api/dictionary';
 
@@ -22,6 +22,7 @@ import Keyboard from './components/Keyboard';
 import MessageCenter from './components/MessageCenter';
 import Loader from './components/Loader';
 import NewGame from './components/NewGame';
+import StartGame from './components/StartGame';
 import Score from './components/Score';
 import Snackbar from './components/Snackbar';
 import Hint from './components/Hint';
@@ -34,6 +35,7 @@ function App() {
 
   const highScore = useRef<number>(localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')!) : STARTING_HIGH_SCORE_VALUE);
 
+  const [firstTimePlaying, setFirstTimePlaying] = useState<boolean>(true);
   const [userHP, setUserHP] = useState<HitPointProps[]>(FULL_HP_ARRAY);
   const [message, setMessage] = useState<string>('');
   const [letterString, setLetterString] = useState<LetterProps[]>([]);
@@ -291,6 +293,7 @@ function App() {
         pointsWon={pointsWon} 
         highScore={highScore.current}
         openModal={gameOver} />
+      <StartGame openModal={firstTimePlaying} onClick={() => setFirstTimePlaying(false)} />
     </>
   );
 }

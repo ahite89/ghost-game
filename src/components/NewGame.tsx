@@ -21,7 +21,7 @@ export default function NewGame({
                 <Stack alignItems="center">
                     <Typography paddingBottom="2rem">You scored {numberOfPointsWon} points</Typography>
                     <Typography paddingBottom="2rem">High score: {highScore}</Typography>
-                    <Button style={{margin: ".2rem", color: "black", borderColor: "black"}} variant='outlined' onClick={() => onClick()}>
+                    <Button style={{margin: ".2rem", color: "black", borderColor: "black"}} variant='outlined' onClick={onClick}>
                         {message}
                     </Button>
                 </Stack>
