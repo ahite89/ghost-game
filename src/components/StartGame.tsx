@@ -1,5 +1,6 @@
-import { StartGameProps } from '../interfaces/startGame';
 import { Button, Box, Typography, Stack, Modal } from '@mui/material';
+import { FaGhost } from 'react-icons/fa';
+import { StartGameProps } from '../interfaces/startGame';
 
 export default function StartGame({ openModal, onClick }: StartGameProps) {
 
@@ -8,8 +9,9 @@ export default function StartGame({ openModal, onClick }: StartGameProps) {
           <Modal open={openModal}>
             <Box sx={modalStyle}>
                 <Stack sx={{padding: "2rem", textAlign: "center"}} alignItems="center">
+                    <FaGhost size={50} style={{paddingBottom: "2rem"}} />
                     <Typography className="start-screen-title" variant="h3" paddingBottom="2rem">ghost</Typography>
-                    <Typography variant="h6" paddingBottom="2rem">Try not to spell the longest word!</Typography>
+                    <Typography variant="h6" paddingBottom="2rem">Earn points by not spelling the longest word</Typography>
                     <Button className="play-button" onClick={onClick}>
                         Play
                     </Button>
@@ -31,5 +33,5 @@ const modalStyle = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "lightgray"
+    backgroundColor: "#d3d6da"
 };

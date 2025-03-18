@@ -261,7 +261,7 @@ function App() {
   return (
     <>
       <Header />
-      <Container maxWidth="sm" sx={{padding: "0 2rem 2rem 2rem", backgroundColor: "white"}}>
+      <Container maxWidth="sm" sx={{padding: "0 2rem 2rem 2rem"}}>
         <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
           <Score pointsWon={pointsWon} letters={letterString} />
           <HitPoints currentHP={userHP} />

@@ -19,7 +19,7 @@ export default function Score({pointsWon, letters}: ScoreProps) {
     }, [number, 50, 10]);
 
     return (
-        <Typography variant="h6">
+        <Typography style={{border: "2px solid black", padding: ".5rem", borderRadius: "50%"}} variant="h6">
             {number}
         </Typography>
     );
