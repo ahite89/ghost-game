@@ -136,7 +136,7 @@ function App() {
       await pauseGameplayThenCallback(() => startNewRound(), pointsAccumulationWaitTime);
     }
     else {
-      setUserHP(userHP.slice(0, -1));
+      await pauseGameplayThenCallback(() => setUserHP(userHP.slice(0, -1)), 1500);
     }
     transitionToUserTurn();  
   };
@@ -263,7 +263,7 @@ function App() {
         {!gameOver &&
           <>
             <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
-              <Score pointsWon={pointsWon} />
+              <Score pointsWon={pointsWon} letters={letterString} />
               <HitPoints currentHP={userHP} />
               <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
             </Stack>
@@ -274,7 +274,11 @@ function App() {
               }
             </Stack>
             <Stack sx={{ py: 3 }} alignItems="center">
-              <LetterString letters={letterString} cursorBlinking={cursorBlinking} animating={animatePoints} />
+              <LetterString   
+                letters={letterString} 
+                cursorBlinking={cursorBlinking} 
+                animating={animatePoints}
+              />
             </Stack>
             <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected} />
           </>
