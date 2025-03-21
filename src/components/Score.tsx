@@ -4,23 +4,39 @@ import { getPointsFromRound } from "../services/score";
 import { useEffect, useState } from "react";
 
 export default function Score({pointsWon, letters}: ScoreProps) {
-
-    //const pointsFromRound = getPointsFromRound(letters, pointsWon);
-    const [number, setNumber] = useState(0);
+    debugger
+    const pointsFromRound = getPointsFromRound(letters, 0);
+    const [totalNumberOfPoints, setTotalNumberOfPoints] = useState(pointsWon);
 
     useEffect(() => {
-        if (number >= 50) return;
+        if (totalNumberOfPoints >= pointsWon + pointsFromRound) return;
 
         const interval = setInterval(() => {
-        setNumber((prev) => (prev < 50 ? prev + 1 : 50));
+            setTotalNumberOfPoints((prev) => (prev < pointsWon + pointsFromRound ? prev + 1 : pointsWon + pointsFromRound));
         }, 10);
 
         return () => clearInterval(interval);
-    }, [number, 50, 10]);
+    }, [totalNumberOfPoints]);
 
     return (
-        <Typography style={{border: "2px solid black", padding: ".5rem", borderRadius: "50%"}} variant="h6">
-            {number}
+        <Typography variant="h6">
+            {totalNumberOfPoints} pts
         </Typography>
     );
 }
+
+// const AnimatedCounter = ({ start = 0, end = 100, speed = 10 }) => {
+//     const [number, setNumber] = useState(start);
+  
+//     useEffect(() => {
+//       if (number >= end) return; // Stop when reaching the end value
+  
+//       const interval = setInterval(() => {
+//         setNumber((prev) => (prev < end ? prev + 1 : end));
+//       }, speed); // Speed controls how fast the numbers change
+  
+//       return () => clearInterval(interval); // Cleanup interval on unmount
+//     }, [number, end, speed]);
+  
+//     return <h1>{number}</h1>;
+//   };

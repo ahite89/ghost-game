@@ -1,37 +1,34 @@
 import { Button, Box, Typography, Stack, Modal } from '@mui/material';
+import { motion, AnimatePresence } from "framer-motion";
 import { FaGhost } from 'react-icons/fa';
 import { StartGameProps } from '../interfaces/startGame';
+import { MODAL_STYLING } from '../constants/modal';
 
 export default function StartGame({ openModal, onClick }: StartGameProps) {
 
     return (
-        <div>   
-          <Modal open={openModal}>
-            <Box sx={modalStyle}>
-                <Stack sx={{padding: "2rem", textAlign: "center"}} alignItems="center">
-                    <FaGhost size={50} style={{paddingBottom: "2rem"}} />
-                    <Typography className="start-screen-title" variant="h3" paddingBottom="2rem">ghost</Typography>
-                    <Typography variant="h6" paddingBottom="2rem">Earn points by not spelling the longest word</Typography>
-                    <Button className="play-button" onClick={onClick}>
-                        Play
-                    </Button>
-                </Stack>
-            </Box>
-          </Modal>
-        </div>
+        <AnimatePresence>
+            {openModal && (   
+                <Modal open={openModal}>
+                    <Box 
+                        sx={MODAL_STYLING}
+                        component={motion.div}
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <Stack sx={{padding: "2rem", textAlign: "center"}} alignItems="center">
+                            <FaGhost size={50} style={{paddingBottom: "2rem"}} />
+                            <Typography className="start-screen-title" variant="h3" paddingBottom="2rem">ghost</Typography>
+                            <Typography variant="h6" paddingBottom="2rem">Earn points by not spelling the longest word</Typography>
+                            <Button className="play-button" onClick={onClick}>
+                                Play
+                            </Button>
+                        </Stack>
+                    </Box>
+                </Modal>
+            )}
+        </AnimatePresence>
     );
-};
-    
-const modalStyle = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    bgcolor: "white",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#d3d6da"
 };
