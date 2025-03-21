@@ -1,6 +1,7 @@
 import { LetterProps } from "./letter";
 
 export interface ScoreProps {
-    pointsWon: number,
-    letters: LetterProps[]
+    pointsFromRound: number,
+    totalPoints: number,
+    setTotalPoints: React.Dispatch<React.SetStateAction<number>>
 }

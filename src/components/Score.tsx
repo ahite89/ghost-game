@@ -1,42 +1,23 @@
 import { Typography } from "@mui/material";
 import { ScoreProps } from "../interfaces/score";
-import { getPointsFromRound } from "../services/score";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-export default function Score({pointsWon, letters}: ScoreProps) {
-    debugger
-    const pointsFromRound = getPointsFromRound(letters, 0);
-    const [totalNumberOfPoints, setTotalNumberOfPoints] = useState(pointsWon);
+export default function Score({pointsFromRound, totalPoints, setTotalPoints}: ScoreProps) {
+    const newScore = totalPoints + pointsFromRound;
 
     useEffect(() => {
-        if (totalNumberOfPoints >= pointsWon + pointsFromRound) return;
+        if (totalPoints >= newScore) return;
 
         const interval = setInterval(() => {
-            setTotalNumberOfPoints((prev) => (prev < pointsWon + pointsFromRound ? prev + 1 : pointsWon + pointsFromRound));
-        }, 10);
+            setTotalPoints((prev) => (prev < newScore ? prev + 1 : newScore));
+        }, 30);
 
         return () => clearInterval(interval);
-    }, [totalNumberOfPoints]);
+    }, [pointsFromRound]);
 
     return (
         <Typography variant="h6">
-            {totalNumberOfPoints} pts
+            {totalPoints} pts
         </Typography>
     );
 }
-
-// const AnimatedCounter = ({ start = 0, end = 100, speed = 10 }) => {
-//     const [number, setNumber] = useState(start);
-  
-//     useEffect(() => {
-//       if (number >= end) return; // Stop when reaching the end value
-  
-//       const interval = setInterval(() => {
-//         setNumber((prev) => (prev < end ? prev + 1 : end));
-//       }, speed); // Speed controls how fast the numbers change
-  
-//       return () => clearInterval(interval); // Cleanup interval on unmount
-//     }, [number, end, speed]);
-  
-//     return <h1>{number}</h1>;
-//   };

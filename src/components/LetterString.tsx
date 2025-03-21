@@ -31,7 +31,7 @@ export default function LetterString({letters, cursorBlinking, animating}: Lette
                 setTimeout(() => {
                     setPointsFromRound(getPointsFromRound(letters, 0));
                     setCombineScore(true);
-                }, 2000);
+                }, 1000);
                 setStartAnimating(false);       
             }, 1000);
         }

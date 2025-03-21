@@ -42,7 +42,8 @@ function App() {
   const [cpuValidWordsList, setCpuValidWordsList] = useState<string[]>(['']);
   const [allValidWordsList, setAllValidWordsList] = useState<string[]>(['']);
   const [disableKeyboard, setDisableKeyboard] = useState<boolean>(false);
-  const [pointsWon, setPointsWon] = useState<number>(STARTING_POINT_VALUE);
+  const [pointsFromRound, setPointsFromRound] = useState<number>(STARTING_POINT_VALUE);
+  const [totalPoints, setTotalPoints] = useState<number>(STARTING_POINT_VALUE);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [isLetterEntered, setIsLetterEntered] = useState<boolean>(false);
   const [gameWinner, setGameWinner] = useState<Player>(Player.None);
@@ -70,7 +71,7 @@ function App() {
 
   const startNewGame = async (): Promise<void> => {
     setUserHP(FULL_HP_ARRAY);
-    setPointsWon(STARTING_POINT_VALUE);
+    setTotalPoints(STARTING_POINT_VALUE);
     setHintCount(INITIAL_HINT_COUNT);
     setDisableKeyboard(false);
     setGameWinner(Player.None);
@@ -84,6 +85,7 @@ function App() {
 
   const startNewRound = async (): Promise<void> => {
     setLetterString([]);
+    setPointsFromRound(STARTING_POINT_VALUE);
     setAnimatePoints(false);
     const startingTwoLetters: LetterProps[] = getTwoRandomLetters(CPU_WORD_LIST);
     setLetterString(startingTwoLetters);
@@ -105,22 +107,22 @@ function App() {
     await pauseGameplayThenCallback(gameWinnerCallback, 2000);
   };
 
-  const accumulatePoints = async (): Promise<void> => {
-    const pointsFromRound = getPointsFromRound(letterString, pointsWon);
-    setPointsWon(pointsFromRound);
+  const accumulatePointsFromRound = async (): Promise<void> => {
+    const totalPointsFromRound = getPointsFromRound(letterString, pointsFromRound);
+    setPointsFromRound(totalPointsFromRound);
   }
 
   const setHighScore = (): void => {
     const currentHighScore = localStorage.getItem('highScore');
     if (currentHighScore) {
-      if (pointsWon > parseInt(currentHighScore)) {
-        localStorage.setItem('highScore', pointsWon.toString());
-        highScore.current = pointsWon;
+      if (totalPoints > parseInt(currentHighScore)) {
+        localStorage.setItem('highScore', totalPoints.toString());
+        highScore.current = totalPoints;
       }
     }
     else {
-      localStorage.setItem('highScore', pointsWon.toString());
-      highScore.current = pointsWon;
+      localStorage.setItem('highScore', totalPoints.toString());
+      highScore.current = totalPoints;
     }
   }
 
@@ -132,10 +134,9 @@ function App() {
     setDisableKeyboard(false);
     setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 1500});
     if (winner === Player.User) {
-      const pointsAccumulationWaitTime = letterString.length * 500;
       await pauseGameplayThenCallback(() => animatePointsAtRoundEnd(), 1500);
-      await pauseGameplayThenCallback(() => accumulatePoints(), pointsAccumulationWaitTime);
-      await pauseGameplayThenCallback(() => startNewRound(), pointsAccumulationWaitTime);
+      await pauseGameplayThenCallback(() => accumulatePointsFromRound(), letterString.length * 200);
+      await pauseGameplayThenCallback(() => startNewRound(), letterString.length * 400);
     }
     else {
       await pauseGameplayThenCallback(() => setUserHP(userHP.slice(0, -1)), 1500);
@@ -263,7 +264,7 @@ function App() {
       <Header />
       <Container maxWidth="sm" sx={{padding: "0 2rem 2rem 2rem"}}>
         <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
-          <Score pointsWon={pointsWon} letters={letterString} />
+          <Score totalPoints={totalPoints} setTotalPoints={setTotalPoints} pointsFromRound={pointsFromRound} />
           <HitPoints currentHP={userHP} />
           <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
         </Stack>
@@ -290,7 +291,7 @@ function App() {
       <NewGame 
         onClick={startNewGame} 
         message='Play again?' 
-        pointsWon={pointsWon} 
+        pointsWon={totalPoints}
         highScore={highScore.current}
         openModal={gameOver} />
       <StartGame openModal={firstTimePlaying} onClick={() => setFirstTimePlaying(false)} />
