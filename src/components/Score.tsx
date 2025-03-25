@@ -6,11 +6,6 @@ export default function Score({ incrementScore, pointsFromRound, totalPoints, se
 
     useEffect(() => {
         if (incrementScore) {
-            // const interval = setInterval(() => {
-            //     setTotalPoints((prev) => (prev < newScore ? prev + 1 : newScore));
-            // }, 30);
-
-            // return () => clearInterval(interval);
             let startingPointValue = totalPoints;
             let newPointTotal = totalPoints + pointsFromRound;
             const interval = setInterval(() => {
@@ -18,23 +13,11 @@ export default function Score({ incrementScore, pointsFromRound, totalPoints, se
                 startingPointValue++;
             
                 if (startingPointValue === newPointTotal) {
-                    clearInterval(interval); // Stop when points are fully added
+                    clearInterval(interval);
                 }
-            }, 50); // Adjust speed here (smaller = faster)
+            }, 50);
         }
     }, [incrementScore]);
-
-    // const incrementScoreGradually = (points: number) => {
-    //     let count = 0;
-    //     const interval = setInterval(() => {
-    //       setScore((prev) => prev + 1);
-    //       count++;
-    
-    //       if (count === points) {
-    //         clearInterval(interval); // Stop when points are fully added
-    //       }
-    //     }, 50); // Adjust speed here (smaller = faster)
-    //   };
 
     return (
         <Typography variant="h6">

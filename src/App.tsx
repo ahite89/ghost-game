@@ -266,7 +266,11 @@ function App() {
       <Header />
       <Container maxWidth="sm" sx={{padding: "0 2rem 2rem 2rem"}}>
         <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
-          <Score incrementScore={incrementScore} totalPoints={totalPoints} setTotalPoints={setTotalPoints} pointsFromRound={pointsFromRound} />
+          <Score 
+            incrementScore={incrementScore} 
+            totalPoints={totalPoints} 
+            setTotalPoints={setTotalPoints} 
+            pointsFromRound={pointsFromRound} />
           <HitPoints currentHP={userHP} />
           <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
         </Stack>
