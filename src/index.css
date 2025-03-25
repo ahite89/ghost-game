@@ -82,10 +82,10 @@ code {
   height: var(--cursor-height, 3.5rem);
   background: black;
   display: inline-block;
-  animation: cursor-blink 1.2s steps(2) infinite;
+  animation: blink 1.2s steps(2) infinite;
 }
 
-@keyframes cursor-blink {
+@keyframes blink {
   0% {
     opacity: 0;
   }
@@ -100,6 +100,10 @@ code {
 
 .letter {
   font-size: clamp(1rem, 10vw, 3rem) !important;
+}
+
+.blinking-letter {
+  animation: blink 1.2s steps(2) infinite;
 }
 
 .keyBoardContainer {

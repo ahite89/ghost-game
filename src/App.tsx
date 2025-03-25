@@ -134,9 +134,15 @@ function App() {
     setDisableKeyboard(false);
     setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 1500});
     if (winner === Player.User) {
-      await pauseGameplayThenCallback(() => animatePointsAtRoundEnd(), 1500);
-      await pauseGameplayThenCallback(() => accumulatePointsFromRound(), letterString.length * 200);
-      await pauseGameplayThenCallback(() => startNewRound(), letterString.length * 400);
+      setTimeout(() => {
+        setTimeout(() => {
+          setTimeout(() => {
+            startNewRound();
+          }, 3000);
+          accumulatePointsFromRound();
+        }, 2000);
+        animatePointsAtRoundEnd();
+      }, 1500);
     }
     else {
       await pauseGameplayThenCallback(() => setUserHP(userHP.slice(0, -1)), 1500);
@@ -163,7 +169,7 @@ function App() {
   const handleValidCpuWord = async (wordsFromValidCpuWordsList: string[], wordsFromAllValidWordsList: string[], nextValidWord: string): Promise<void> => {
     const nextLetter: string = nextValidWord[letterString.length];
     const newLetterString: LetterProps[] = letterString.concat(
-      { letter: nextLetter.toUpperCase(), pointValue: letterToPointsMap[nextLetter.toUpperCase()] , playedBy: Player.CPU }
+      { letter: nextLetter.toUpperCase(), pointValue: letterToPointsMap[nextLetter.toUpperCase()] , blinking: false }
     );
     setLetterString(newLetterString);
     const newValidCpuWord = findNextValidCpuWord(getLettersFromLetterPropsArray(newLetterString), 
@@ -201,6 +207,7 @@ function App() {
         setDisableKeyboard(true);
         const validWordCallback = () => {
           setAllValidWordsList(newValidWords);
+          setLetterString(letterString.map(letter => ({...letter, blinking: false})));
           beginCpuGameplay();
         };
         await pauseGameplayThenCallback(validWordCallback, 1000);
@@ -230,7 +237,7 @@ function App() {
     else if (!isLetterEntered && key !== Keys.Delete && key !== Keys.Enter) {
       setCursorBlinking(false);
       const newGuessString = letterString.concat(
-        { letter: key, pointValue: letterToPointsMap[key], playedBy: Player.User }
+        { letter: key, pointValue: letterToPointsMap[key], blinking: true }
       );
       setLetterString(newGuessString);
       setIsLetterEntered(true);
@@ -249,7 +256,7 @@ function App() {
       else {
         const hintLetter: string = nextValidWord[letterString.length].toUpperCase();
         const newGuessString = letterString.concat(
-          { letter: hintLetter, pointValue: letterToPointsMap[hintLetter], playedBy: Player.User }
+          { letter: hintLetter, pointValue: letterToPointsMap[hintLetter], blinking: true }
         );
         
         setLetterString(newGuessString);

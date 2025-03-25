@@ -108,7 +108,7 @@ export default function LetterString({letters, cursorBlinking, animating}: Lette
                         <Letter 
                             key={index} 
                             color={letter.color} 
-                            playedBy={letter.playedBy} 
+                            blinking={letter.blinking} 
                             letter={letter.letter} 
                             pointValue={letter.pointValue}
                         />
