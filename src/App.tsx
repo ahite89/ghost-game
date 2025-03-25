@@ -5,7 +5,6 @@ import allValidWordsFromDictionary from './api/dictionary';
 
 import { getTwoRandomLetters, getLettersFromLetterPropsArray } from './services/letter';
 import { getValidWords, getRandomValidWord, findNextValidCpuWord } from './services/words';
-import { getPointsFromRound } from './services/score';
 
 import { FULL_HP_ARRAY } from './constants/hitPoints';
 import { Keys } from './constants/keyboard';
@@ -26,6 +25,7 @@ import StartGame from './components/StartGame';
 import Score from './components/Score';
 import Snackbar from './components/Snackbar';
 import Hint from './components/Hint';
+import PointsAnimation from './components/PointsAnimation';
 
 import { HitPointProps } from './interfaces/hitPoint';
 import { SnackbarProps } from './interfaces/snackbar';
@@ -44,6 +44,7 @@ function App() {
   const [disableKeyboard, setDisableKeyboard] = useState<boolean>(false);
   const [pointsFromRound, setPointsFromRound] = useState<number>(STARTING_POINT_VALUE);
   const [totalPoints, setTotalPoints] = useState<number>(STARTING_POINT_VALUE);
+  const [incrementScore, setIncrementScore] = useState<boolean>(false);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [isLetterEntered, setIsLetterEntered] = useState<boolean>(false);
   const [gameWinner, setGameWinner] = useState<Player>(Player.None);
@@ -86,7 +87,6 @@ function App() {
   const startNewRound = async (): Promise<void> => {
     setLetterString([]);
     setPointsFromRound(STARTING_POINT_VALUE);
-    setAnimatePoints(false);
     const startingTwoLetters: LetterProps[] = getTwoRandomLetters(CPU_WORD_LIST);
     setLetterString(startingTwoLetters);
     const allValidWords: string[] = getValidWords(allValidWordsFromDictionary, getLettersFromLetterPropsArray(startingTwoLetters).join(''));
@@ -107,11 +107,6 @@ function App() {
     await pauseGameplayThenCallback(gameWinnerCallback, 2000);
   };
 
-  const accumulatePointsFromRound = async (): Promise<void> => {
-    const totalPointsFromRound = getPointsFromRound(letterString, pointsFromRound);
-    setPointsFromRound(totalPointsFromRound);
-  }
-
   const setHighScore = (): void => {
     const currentHighScore = localStorage.getItem('highScore');
     if (currentHighScore) {
@@ -126,22 +121,16 @@ function App() {
     }
   }
 
-  const animatePointsAtRoundEnd = async (): Promise<void> => {
-    setAnimatePoints(true);
-  }
-
   const declareRoundWinner = async (message: string, winner: Player): Promise<void> => {
     setDisableKeyboard(false);
     setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 1500});
     if (winner === Player.User) {
       setTimeout(() => {
         setTimeout(() => {
-          setTimeout(() => {
-            startNewRound();
-          }, 3000);
-          accumulatePointsFromRound();
-        }, 2000);
-        animatePointsAtRoundEnd();
+          startNewRound();
+        }, 3000);
+        setCursorBlinking(false);
+        setAnimatePoints(true);
       }, 1500);
     }
     else {
@@ -266,12 +255,18 @@ function App() {
     }
   };
 
+  const handleIncrementScore = (points: number): void => {
+    setPointsFromRound(points);
+    setIncrementScore(true);
+    setAnimatePoints(false);
+  }
+
   return (
     <>
       <Header />
       <Container maxWidth="sm" sx={{padding: "0 2rem 2rem 2rem"}}>
         <Stack sx={{ py: 3 }} direction="row" justifyContent="space-between">
-          <Score totalPoints={totalPoints} setTotalPoints={setTotalPoints} pointsFromRound={pointsFromRound} />
+          <Score incrementScore={incrementScore} totalPoints={totalPoints} setTotalPoints={setTotalPoints} pointsFromRound={pointsFromRound} />
           <HitPoints currentHP={userHP} />
           <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
         </Stack>
@@ -282,11 +277,15 @@ function App() {
           }
         </Stack>
         <Stack sx={{ py: 3 }} alignItems="center">
-          <LetterString   
-            letters={letterString} 
-            cursorBlinking={cursorBlinking} 
-            animating={animatePoints}
-          />
+          <Stack direction="row">
+            <div style={{ position: "relative", display: "flex", textAlign: "center" }}>          
+              <PointsAnimation 
+                startScoringAnimation={animatePoints} 
+                pointsArray={letterString.map((letter) => letter.pointValue)} 
+                handleIncrementScore={handleIncrementScore} />
+              <LetterString letters={letterString} cursorBlinking={cursorBlinking} />
+            </div>
+          </Stack>
         </Stack>
         <Keyboard disableKeyboard={disableKeyboard} handleKeySelected={handleKeySelected} />         
         <Snackbar 
