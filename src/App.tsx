@@ -34,7 +34,7 @@ function App() {
 
   const highScore = useRef<number>(localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')!) : STARTING_HIGH_SCORE_VALUE);
 
-  const [firstTimePlaying, setFirstTimePlaying] = useState<boolean>(true);
+  const [firstTimePlaying, setFirstTimePlaying] = useState<boolean>(false);
   const [userHP, setUserHP] = useState<HitPointProps[]>(FULL_HP_ARRAY);
   const [letterString, setLetterString] = useState<LetterProps[]>([]);
   const [cpuValidWordsList, setCpuValidWordsList] = useState<string[]>(['']);
@@ -54,6 +54,14 @@ function App() {
   const handleCloseSnackbar = () => {
     setSnackbarState({...snackbarState, showSnackbar: false});
   };
+
+  useEffect(() => {
+    debugger
+    const firstTimePlaying = localStorage.getItem('firstTimePlaying');
+    if (firstTimePlaying === null) {
+      setFirstTimePlaying(true);
+    }
+  }, []);
 
   useEffect(() => {
     startNewGame();
@@ -84,6 +92,7 @@ function App() {
 
   const startNewRound = async (): Promise<void> => {
     setLetterString([]);
+    setIncrementScore(false);
     setPointsFromRound(STARTING_POINT_VALUE);
     const startingTwoLetters: LetterProps[] = getTwoRandomLetters(CPU_WORD_LIST);
     setLetterString(startingTwoLetters);
@@ -117,7 +126,7 @@ function App() {
       localStorage.setItem('highScore', totalPoints.toString());
       highScore.current = totalPoints;
     }
-  }
+  };
 
   const declareRoundWinner = async (message: string, winner: Player): Promise<void> => {
     setDisableKeyboard(false);
@@ -137,7 +146,7 @@ function App() {
     transitionToUserTurn();  
   };
 
-  const beginCpuGameplay = async (): Promise<void> => {
+  const beginCpuGameplay = async (letterString: LetterProps[]): Promise<void> => {
     setCursorBlinking(false);
     const wordsFromValidCpuWordsList = getValidWords(cpuValidWordsList, getLettersFromLetterPropsArray(letterString).join(''));
     const wordsFromAllValidWordsList = getValidWords(allValidWordsList, getLettersFromLetterPropsArray(letterString).join(''));
@@ -145,16 +154,17 @@ function App() {
     const newValidCpuWord = findNextValidCpuWord(getLettersFromLetterPropsArray(letterString), 
       wordsFromValidCpuWordsList, wordsFromAllValidWordsList);
 
-    debugger
     if (!newValidCpuWord) {
       await declareRoundWinner("Nice try!", Player.CPU);
     }
     else {
-      await handleValidCpuWord(wordsFromValidCpuWordsList, wordsFromAllValidWordsList, newValidCpuWord);
+      await handleValidCpuWord(wordsFromValidCpuWordsList, wordsFromAllValidWordsList, newValidCpuWord, letterString);
     }
   };
 
-  const handleValidCpuWord = async (wordsFromValidCpuWordsList: string[], wordsFromAllValidWordsList: string[], nextValidWord: string): Promise<void> => {
+  const handleValidCpuWord = async (
+    wordsFromValidCpuWordsList: string[], wordsFromAllValidWordsList: string[], nextValidWord: string, letterString: LetterProps[]
+  ): Promise<void> => {
     const nextLetter: string = nextValidWord[letterString.length];
     const newLetterString: LetterProps[] = letterString.concat(
       { letter: nextLetter.toUpperCase(), pointValue: letterToPointsMap[nextLetter.toUpperCase()] , blinking: false }
@@ -193,12 +203,13 @@ function App() {
     const newValidWords: string[] = getValidWords(allValidWordsList, getLettersFromLetterPropsArray(letterString).join(''));
       if (newValidWords.length) {
         setDisableKeyboard(true);
-        const validWordCallback = () => {
-          setAllValidWordsList(newValidWords);
-          setLetterString(letterString => letterString.map(letter => ({...letter, blinking: false})));
-          beginCpuGameplay();
+        const nonBlinkingLetterString = letterString.map(letter => ({ ...letter, blinking: false }));
+        setLetterString(nonBlinkingLetterString);
+        const validWordCallback = (letterString: LetterProps[]) => {
+          setAllValidWordsList(newValidWords);          
+          beginCpuGameplay(letterString);       
         };
-        await pauseGameplayThenCallback(validWordCallback, 1000);
+        await pauseGameplayThenCallback(() => validWordCallback(nonBlinkingLetterString), 1000);
       }
       else {
         setSnackbarState({...snackbarState, showSnackbar: true, message: "Not in word list", displayDuration: 1500});
@@ -258,7 +269,12 @@ function App() {
     setPointsFromRound(points);
     setIncrementScore(true);
     setAnimatePoints(false);
-  }
+  };
+
+  const handleCloseStartGameModal = (): void => {
+    localStorage.setItem('firstTimePlaying', 'false');
+    setFirstTimePlaying(false);
+  };
 
   return (
     <>
@@ -302,7 +318,9 @@ function App() {
         pointsWon={totalPoints}
         highScore={highScore.current}
         openModal={gameOver} />
-      <StartGame openModal={firstTimePlaying} onClick={() => setFirstTimePlaying(false)} />
+        {firstTimePlaying &&
+          <StartGame openModal={firstTimePlaying} onClick={handleCloseStartGameModal} />
+        }
     </>
   );
 }
