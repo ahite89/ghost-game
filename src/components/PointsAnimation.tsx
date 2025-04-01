@@ -42,14 +42,13 @@ export default function PointsAnimation({ startScoringAnimation, pointsArray, ha
                             animate={{ opacity: startScoringAnimation ? 1 : 0, scale: startScoringAnimation ? 1 : 0.8 }}
                             transition={{ duration: 0.3, delay: index * 0.1 }}
                             exit={{ opacity: 0 }}
-                            onAnimationComplete={() => goToNextScoringStage(2, 1000)}
+                            onAnimationComplete={() => goToNextScoringStage(2, 1500)}
                             style={{
                                 fontSize: "1rem",
                                 color: "black",
                                 padding: "5px",
                                 minWidth: "1rem",
-                                textAlign: "center",
-                                fontWeight: "bold"
+                                textAlign: "center"
                             }}
                         >
                             +{pointValue}
@@ -63,10 +62,11 @@ export default function PointsAnimation({ startScoringAnimation, pointsArray, ha
                     animate={{ opacity: startScoringAnimation ? 1 : 0, y: 0 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
                     exit={{ opacity: 0, y: 0 }}
-                    onAnimationComplete={() => goToNextScoringStage(3, 1000, true)}
+                    onAnimationComplete={() => goToNextScoringStage(3, 1500, true)}
                     style={{
                         position: "absolute",
                         top: "-2em",
+                        left: "50%",
                         transform: "translateX(-50%)",
                         fontSize: "1.5rem",
                         color: "black",

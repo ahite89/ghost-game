@@ -18,7 +18,6 @@ import LetterString from './components/LetterString';
 import Header from './components/Header';
 import HitPoints from './components/HitPoints';
 import Keyboard from './components/Keyboard';
-import MessageCenter from './components/MessageCenter';
 import Loader from './components/Loader';
 import NewGame from './components/NewGame';
 import StartGame from './components/StartGame';
@@ -37,7 +36,6 @@ function App() {
 
   const [firstTimePlaying, setFirstTimePlaying] = useState<boolean>(true);
   const [userHP, setUserHP] = useState<HitPointProps[]>(FULL_HP_ARRAY);
-  const [message, setMessage] = useState<string>('');
   const [letterString, setLetterString] = useState<LetterProps[]>([]);
   const [cpuValidWordsList, setCpuValidWordsList] = useState<string[]>(['']);
   const [allValidWordsList, setAllValidWordsList] = useState<string[]>(['']);
@@ -128,7 +126,7 @@ function App() {
       setTimeout(() => {
         setTimeout(() => {
           startNewRound();
-        }, 3000);
+        }, 4500);
         setCursorBlinking(false);
         setAnimatePoints(true);
       }, 1500);
@@ -147,6 +145,7 @@ function App() {
     const newValidCpuWord = findNextValidCpuWord(getLettersFromLetterPropsArray(letterString), 
       wordsFromValidCpuWordsList, wordsFromAllValidWordsList);
 
+    debugger
     if (!newValidCpuWord) {
       await declareRoundWinner("Nice try!", Player.CPU);
     }
@@ -196,7 +195,7 @@ function App() {
         setDisableKeyboard(true);
         const validWordCallback = () => {
           setAllValidWordsList(newValidWords);
-          setLetterString(letterString.map(letter => ({...letter, blinking: false})));
+          setLetterString(letterString => letterString.map(letter => ({...letter, blinking: false})));
           beginCpuGameplay();
         };
         await pauseGameplayThenCallback(validWordCallback, 1000);
@@ -275,7 +274,6 @@ function App() {
           <Hint hintCount={hintCount} onClick={handleHintButtonClick} />
         </Stack>
         <Stack sx={{ py: 4 }} alignItems="center">
-          <MessageCenter message={message} />
           {(disableKeyboard && gameWinner === Player.None) &&
             <Loader />
           }
