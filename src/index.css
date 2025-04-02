@@ -82,11 +82,11 @@ code {
   height: var(--cursor-height, 3.5rem);
   background: black;
   display: inline-block;
-  animation: blink 1.2s steps(2) infinite;
+  animation: blink 1.2s steps(1) infinite;
 }
 
 @keyframes blink {
-  0% {
+  50% {
     opacity: 0;
   }
 }
@@ -103,7 +103,7 @@ code {
 }
 
 .blinking-letter {
-  animation: blink 1.2s steps(2) infinite;
+  animation: blink 1.2s steps(1) infinite;
 }
 
 .keyBoardContainer {

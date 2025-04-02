@@ -21,7 +21,10 @@ export default function StartGame({ openModal, onClick }: StartGameProps) {
                         <Stack sx={{padding: "2rem", textAlign: "center"}} alignItems="center">
                             <FaGhost size={50} style={{paddingBottom: "2rem"}} />
                             <Typography className="start-screen-title" variant="h3" paddingBottom="2rem">ghost</Typography>
-                            <Typography variant="h6" paddingBottom="2rem">Earn points by not spelling the longest word</Typography>
+                            <Typography variant="h6" paddingBottom="2rem">
+                                Take turns building a word one letter at a time<br />
+                                Avoid completing the longest word to win the round and earn points!
+                            </Typography>
                             <Button className="play-button" onClick={onClick}>
                                 Play
                             </Button>
