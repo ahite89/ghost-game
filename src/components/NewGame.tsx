@@ -5,7 +5,6 @@ import { NewGameProps } from '../interfaces/newGame';
 import { MODAL_STYLING } from '../constants/modal';
 
 export default function NewGame({ 
-    message,
     onClick,
     pointsWon,
     highScore,
@@ -22,10 +21,10 @@ export default function NewGame({
             <Box sx={MODAL_STYLING}>
                 <Stack alignItems="center">
                     <FaGhost size={50} style={{paddingBottom: "2rem"}} />
-                    <Typography variant="h6" paddingBottom="2rem">You scored {numberOfPointsWon} points</Typography>
+                    <Typography variant="h6" paddingBottom="2rem">You scored {numberOfPointsWon} points!</Typography>
                     <Typography variant="h6" paddingBottom="2rem">High score: {highScore}</Typography>
                     <Button className="play-button" onClick={onClick}>
-                        {message}
+                        Play again
                     </Button>
                 </Stack>
             </Box>

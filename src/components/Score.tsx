@@ -21,7 +21,7 @@ export default function Score({ incrementScore, pointsFromRound, totalPoints, se
 
     return (
         <Typography variant="h6">
-            {totalPoints} pts
+            Score: {totalPoints}
         </Typography>
     );
 }

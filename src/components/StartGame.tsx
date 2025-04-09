@@ -22,7 +22,9 @@ export default function StartGame({ openModal, onClick }: StartGameProps) {
                             <FaGhost size={50} style={{paddingBottom: "2rem"}} />
                             <Typography className="start-screen-title" variant="h3" paddingBottom="2rem">ghost</Typography>
                             <Typography variant="h6" paddingBottom="2rem">
-                                Take turns building a word one letter at a time<br />
+                                Take turns building a word one letter at a time
+                            </Typography>
+                            <Typography variant="h6" paddingBottom="2rem">
                                 Avoid completing the longest word to win the round and earn points!
                             </Typography>
                             <Button className="play-button" onClick={onClick}>

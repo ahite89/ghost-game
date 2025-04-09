@@ -56,7 +56,6 @@ function App() {
   };
 
   useEffect(() => {
-    debugger
     const firstTimePlaying = localStorage.getItem('firstTimePlaying');
     if (firstTimePlaying === null) {
       setFirstTimePlaying(true);
@@ -313,8 +312,7 @@ function App() {
           closeSnackbar={handleCloseSnackbar} />
       </Container>
       <NewGame 
-        onClick={startNewGame} 
-        message='Play again?' 
+        onClick={startNewGame}
         pointsWon={totalPoints}
         highScore={highScore.current}
         openModal={gameOver} />
