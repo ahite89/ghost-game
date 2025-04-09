@@ -57,7 +57,7 @@ export default function HitPoints({currentHP}: HitPointsProps) {
     });
 
     return (
-        <div style={{display: "flex", justifyContent: "center"}}>
+        <div style={{display: "flex", justifyContent: "center", paddingRight: "2rem"}}>
             {renderedHitPoints}
         </div>
     );

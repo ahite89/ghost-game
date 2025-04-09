@@ -316,9 +316,7 @@ function App() {
         pointsWon={totalPoints}
         highScore={highScore.current}
         openModal={gameOver} />
-        {/* {firstTimePlaying && */}
-          <StartGame openModal={firstTimePlaying} onClick={handleCloseStartGameModal} />
-        {/* } */}
+      <StartGame openModal={firstTimePlaying} onClick={handleCloseStartGameModal} />
     </>
   );
 }
