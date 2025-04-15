@@ -129,6 +129,7 @@ function App() {
 
   const declareRoundWinner = async (message: string, winner: Player): Promise<void> => {
     setDisableKeyboard(false);
+    setCursorBlinking(false);
     setSnackbarState({...snackbarState, showSnackbar: true, message: message, displayDuration: 1500});
     if (winner === Player.User) {
       setTimeout(() => {

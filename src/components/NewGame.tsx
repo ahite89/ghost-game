@@ -15,6 +15,14 @@ export default function NewGame({
         return pointsWon;
     }, [pointsWon]);
 
+    const highScoreMessage = (): string => {
+        if (pointsWon < highScore) {
+            return `High score: ${highScore}`;
+        } else {
+            return `That's a new high score!`;
+        }
+    };
+
     return (
         <div>   
           <Modal open={openModal}>
@@ -22,9 +30,9 @@ export default function NewGame({
                 <Stack alignItems="center">
                     <FaGhost size={50} style={{paddingBottom: "2rem"}} />
                     <Typography variant="h6" paddingBottom="2rem">You scored {numberOfPointsWon} points!</Typography>
-                    <Typography variant="h6" paddingBottom="2rem">High score: {highScore}</Typography>
+                    <Typography variant="h6" paddingBottom="2rem">{highScoreMessage()}</Typography>
                     <Button className="play-button" onClick={onClick}>
-                        Play again
+                        Play again?
                     </Button>
                 </Stack>
             </Box>
