@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Container, Stack } from '@mui/material';
+import { Container, Stack, Typography } from '@mui/material';
 
 import allValidWordsFromDictionary from './api/dictionary';
 
@@ -298,10 +298,16 @@ function App() {
           <Stack direction="row">
             <div style={{ position: "relative", display: "flex", textAlign: "center" }}>          
               <PointsAnimation 
-                startScoringAnimation={animatePoints} 
+                startScoringAnimation={animatePoints}
                 pointsArray={letterString.map((letter) => letter.pointValue)} 
                 handleIncrementScore={handleIncrementScore} />
-              <LetterString letters={letterString} cursorBlinking={cursorBlinking} />
+              <LetterString letters={letterString} />
+              {cursorBlinking &&
+                <Typography 
+                  sx={{ alignSelf: "center", "--cursor-height": "2.5rem" } as React.CSSProperties} 
+                  className="blinkingCursor">                           
+                </Typography>
+              }
             </div>
           </Stack>
         </Stack>

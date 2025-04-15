@@ -20,7 +20,7 @@ export default function Score({ incrementScore, pointsFromRound, totalPoints, se
     }, [incrementScore]);
 
     return (
-        <Typography variant="h6">
+        <Typography sx={{alignContent: "center"}} variant="h6">
             Score: {totalPoints}
         </Typography>
     );

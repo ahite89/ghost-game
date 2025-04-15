@@ -12,7 +12,7 @@ export default function Hint({hintCount, onClick}: HintProps) {
             <Badge 
                 style={{cursor: "pointer", border: "2px solid black", padding: ".5rem", borderRadius: "50%"}} 
                 onClick={handleHintButtonClick} badgeContent={hintCount} color="error" showZero>
-                    <HiOutlineLightBulb size={28}>Hint</HiOutlineLightBulb>
+                    <HiOutlineLightBulb size={24}>Hint</HiOutlineLightBulb>
             </Badge>
     );
 };
