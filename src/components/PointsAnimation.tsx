@@ -28,8 +28,6 @@ export default function PointsAnimation({ startScoringAnimation, pointsArray, ha
                         display: "flex",
                         position: "absolute",
                         top: "-1.5em",
-                        left: "50%",
-                        transform: "translateX(-50%)",
                         width: "100%",
                         justifyContent: "center",
                         gap: "0.2em",
@@ -64,15 +62,14 @@ export default function PointsAnimation({ startScoringAnimation, pointsArray, ha
                     exit={{ opacity: 0, y: 0 }}
                     onAnimationComplete={() => goToNextScoringStage(3, 1500, true)}
                     style={{
+                        display: "flex",
                         position: "absolute",
                         top: "-2em",
-                        left: "50%",
-                        transform: "translateX(-50%)",
                         fontSize: "1.5rem",
                         color: "black",
                         padding: "5px",
-                        minWidth: "1rem",
-                        textAlign: "center",
+                        width: "100%",
+                        justifyContent: "center",
                     }}
                 >
                     +{pointsFromRound}
