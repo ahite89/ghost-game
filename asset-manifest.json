@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/ghost-game/static/css/main.2379b95a.css",
-    "main.js": "/ghost-game/static/js/main.5f583b44.js",
+    "main.js": "/ghost-game/static/js/main.a255b43e.js",
     "static/media/roboto-latin-700-normal.woff2": "/ghost-game/static/media/roboto-latin-700-normal.4535474e1cf8598695ad.woff2",
     "static/media/roboto-latin-500-normal.woff2": "/ghost-game/static/media/roboto-latin-500-normal.7077203b1982951ecf76.woff2",
     "static/media/roboto-latin-400-normal.woff2": "/ghost-game/static/media/roboto-latin-400-normal.297d48e1b5a10c0831a9.woff2",
@@ -60,10 +60,10 @@
     "static/media/roboto-greek-ext-400-normal.woff": "/ghost-game/static/media/roboto-greek-ext-400-normal.16eb83b4a3b1ea994243.woff",
     "index.html": "/ghost-game/index.html",
     "main.2379b95a.css.map": "/ghost-game/static/css/main.2379b95a.css.map",
-    "main.5f583b44.js.map": "/ghost-game/static/js/main.5f583b44.js.map"
+    "main.a255b43e.js.map": "/ghost-game/static/js/main.a255b43e.js.map"
   },
   "entrypoints": [
     "static/css/main.2379b95a.css",
-    "static/js/main.5f583b44.js"
+    "static/js/main.a255b43e.js"
   ]
 }
